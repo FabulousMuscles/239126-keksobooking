@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Endless Hatred](https://up.htmlacademy.ru/javascript/16/user/239126).
-* Наставник: `Неизвестно`.
+* Наставник:[Сергей Ufocoder](https://up.htmlacademy.ru/javascript/16/user/573445).
 
 ---
 
