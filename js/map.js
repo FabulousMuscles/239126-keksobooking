@@ -1,5 +1,6 @@
 'use strict';
-var AVATARS = ['user01', 'user02', 'user03', 'user04', 'user05', 'user06', 'user07', 'user08'];
+var URL_AVATAR_PATTERN = 'img/avatars/user0{index}.png';
+var URL_ASSET_PATTERN = 'http://o0.github.io/assets/images/tokyo/{index}.jpg';
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var MAX_ROOM_PRICE = 1000000;
 var MIN_ROOM_PRICE = 1000;
@@ -17,7 +18,6 @@ var LAYOUT_MAX_Y_SIZE = 630;
 var LAYOUT_MIN_Y_SIZE = 130;
 var ADVERTISMENT_LIMIT = 8;
 var PRICE_SIGN = '₽/ночь';
-var URL_PHOTOS = ['img/avatars/{index}.png', 'http://o0.github.io/assets/images/tokyo/{index}.jpg'];
 var FLAT_TYPES_MAP = {
   flat: 'Квартира',
   bungalo: 'Бунгало',
@@ -32,15 +32,13 @@ var FEATURES_MAP = {
   elevator: 'popup__feature--elevator',
   conditioner: 'popup__feature--conditioner'
 };
-var x;
-var y;
 
 var createAdvertisment = function (i) {
-  x = createRandomNumber(LAYOUT_MIN_X_SIZE, LAYOUT_MAX_X_SIZE);
-  y = createRandomNumber(LAYOUT_MIN_Y_SIZE, LAYOUT_MAX_Y_SIZE);
+  var x = createRandomNumber(LAYOUT_MIN_X_SIZE, LAYOUT_MAX_X_SIZE);
+  var y = createRandomNumber(LAYOUT_MIN_Y_SIZE, LAYOUT_MAX_Y_SIZE);
   return {
     author: {
-      avatar: createPhotoUrl(URL_PHOTOS[0], AVATARS[i])
+      avatar: createPhotoUrl(URL_AVATAR_PATTERN, i + 1)
     },
     location: {
       x: x,
@@ -48,7 +46,7 @@ var createAdvertisment = function (i) {
     },
     offer: {
       title: TITLES[i],
-      adress: x.toString() + ' ' + y.toString(),
+      adress: x + ' ' + y,
       price: createRandomNumber(MIN_ROOM_PRICE, MAX_ROOM_PRICE),
       type: TYPES[createRandomNumber(0, TYPES.length)],
       rooms: createRandomNumber(MIN_ROOM_AMOUNT, MAX_ROOM_AMOUNT),
@@ -61,6 +59,10 @@ var createAdvertisment = function (i) {
     }
   };
 };
+
+var normalizeIndex = function (index) {
+  return (index + 1).toString();
+}
 
 var createPhotoUrl = function (urlPhoto, index) {
   return urlPhoto.replace('{index}', index);
@@ -157,7 +159,7 @@ var renderPhotosElements = function (element, data) {
   var popupPhotoElementFragment;
   data.offer.photos.forEach(function (photo) {
     popupPhotoElementFragment = popupPhotoElementRemoved.cloneNode(true);
-    popupPhotoElementFragment.src = createPhotoUrl(URL_PHOTOS[1], photo);
+    popupPhotoElementFragment.src = createPhotoUrl(URL_ASSET_PATTERN, photo);
     fragment.appendChild(popupPhotoElementFragment);
   });
 
