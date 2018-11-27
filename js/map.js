@@ -60,10 +60,6 @@ var createAdvertisment = function (i) {
   };
 };
 
-var normalizeIndex = function (index) {
-  return (index + 1).toString();
-}
-
 var createPhotoUrl = function (urlPhoto, index) {
   return urlPhoto.replace('{index}', index);
 };
