@@ -2,6 +2,8 @@
 var URL_AVATAR_PATTERN = 'img/avatars/user0{index}.png';
 var URL_ASSET_PATTERN = 'http://o0.github.io/assets/images/tokyo/{index}.jpg';
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var ROOMS_GUESTS_TEMPLATE = '{indexOne} комнаты для {indexTwo} гостей';
+var CHECKIN_AND_CHECKOUT_TEMPLATE = 'Заезд после {indexOne}, выезд до {indexTwo}';
 var MAX_ROOM_PRICE = 1000000;
 var MIN_ROOM_PRICE = 1000;
 var MAX_ROOM_AMOUNT = 5;
@@ -81,8 +83,7 @@ var createRandomArray = function (arr) {
 };
 
 var createRandomArrayLength = function (arr) {
-  var copy = arr.slice();
-  copy.length = createRandomNumber(1, arr.length);
+  var copy = arr.slice(0, createRandomNumber(1, arr.length));
 
   return copy;
 };
@@ -120,14 +121,20 @@ var createMapPinFragment = function (templateElement, advertisments) {
   return fragment;
 };
 
+var createText = function (string, indexOne, indexTwo) {
+  var replacedString = string.replace('{indexOne}', indexOne);
+
+  return replacedString.replace('{indexTwo}', indexTwo);
+};
+
 var createMapCardFragment = function (templateElement, data) {
   var element = templateElement.cloneNode(true);
   element.querySelector('.popup__title').textContent = data.offer.title;
   element.querySelector('.popup__text--address').textContent = data.offer.address;
   element.querySelector('.popup__text--price').textContent = data.offer.price + PRICE_SIGN;
   element.querySelector('.popup__type').textContent = FLAT_TYPES_MAP[data.offer.type];
-  element.querySelector('.popup__text--capacity').textContent = data.offer.rooms.toString() + ' комнаты для ' + data.offer.guests.toString() + ' гостей';
-  element.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin + ' выезд до ' + data.offer.checkout;
+  element.querySelector('.popup__text--capacity').textContent = createText(ROOMS_GUESTS_TEMPLATE, data.offer.rooms.toString(), data.offer.guests.toString());
+  element.querySelector('.popup__text--time').textContent = createText(CHECKIN_AND_CHECKOUT_TEMPLATE, data.offer.checkin, data.offer.checkout);
   renderFeatureElements(element, data);
   renderPhotosElements(element, data);
   element.querySelector('.popup__description').textContent = data.offer.description;
