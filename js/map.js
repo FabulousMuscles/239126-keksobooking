@@ -1,19 +1,6 @@
-var AVATARS = ['img/avatars/user01.png',
-              'img/avatars/user02.png',
-              'img/avatars/user03.png',
-              'img/avatars/user04.png',
-              'img/avatars/user05.png',
-              'img/avatars/user06.png',
-              'img/avatars/user07.png',
-              'img/avatars/user08.png'];
-var TITLES = ['Большая уютная квартира',
-             'Маленькая неуютная квартира',
-             'Огромный прекрасный дворец',
-             'Маленький ужасный дворец',
-             'Красивый гостевой домик',
-             'Некрасивый негостеприимный домик',
-             'Уютное бунгало далеко от моря',
-             'Неуютное бунгало по колено в воде'];
+'use strict';
+var AVATARS = ['img/avatars/user01.png', 'img/avatars/user02.png', 'img/avatars/user03.png', 'img/avatars/user04.png', 'img/avatars/user05.png', 'img/avatars/user06.png', 'img/avatars/user07.png', 'img/avatars/user08.png'];
+var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var MAX_ROOM_PRICE = 1000000;
 var MIN_ROOM_PRICE = 1000;
 var MAX_ROOM_AMOUNT = 5;
@@ -23,9 +10,7 @@ var MIN_GUESTS_AMOUNT = 1;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var CHECKINS_AND_CHECKOUTS = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-              'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-              'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var LAYOUT_MAX_X_SIZE = 1100;
 var LAYOUT_MIN_X_SIZE = 100;
 var LAYOUT_MAX_Y_SIZE = 630;
@@ -69,7 +54,7 @@ var createAdvertisment = function (i) {
       x: createRandomNumber(LAYOUT_MIN_X_SIZE, LAYOUT_MAX_X_SIZE),
       y: createRandomNumber(LAYOUT_MIN_Y_SIZE, LAYOUT_MAX_Y_SIZE)
     }
-  }
+  };
 };
 
 var createRandomNumber = function (min, max) {
@@ -121,7 +106,7 @@ var createMapPinFragment = function (templateElement, advertisments) {
 
   advertisments.forEach(function (advertisment) {
     fragment.appendChild(
-      createMapPinElement(templateElement, advertisment)
+        createMapPinElement(templateElement, advertisment)
     );
   });
 
@@ -161,7 +146,7 @@ var renderPhotosElements = function (element, data) {
   var popupPhotosElement = element.querySelector('.popup__photos');
   var popupPhotoElementRemoved = popupPhotosElement.removeChild(popupPhotosElement.querySelector('.popup__photo'));
   var popupPhotoElementFragment;
-  data.offer.photos.forEach(function(photo) {
+  data.offer.photos.forEach(function (photo) {
     popupPhotoElementFragment = popupPhotoElementRemoved.cloneNode(true);
     popupPhotoElementFragment.src = photo;
     fragment.appendChild(popupPhotoElementFragment);
