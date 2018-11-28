@@ -159,11 +159,11 @@ var createCardFragment = function (templateElement, data) {
   return element;
 };
 
-var renderFeatureElements = function (element, data) {
+var renderFeatureElements = function (element, features) {
   var featuresElement = element.querySelector('.popup__features');
   var featureElements = element.querySelectorAll('.popup__feature');
   Array.prototype.forEach.call(featureElements, function (el, i) {
-    if (el.classList.contains(FEATURE_CLASSNAME_MAP[data[i]])) {
+    if (!el.classList.contains(FEATURE_CLASSNAME_MAP[features[i]])) {
       featuresElement.removeChild(el);
     }
   });
@@ -171,13 +171,13 @@ var renderFeatureElements = function (element, data) {
   return featureElements;
 };
 
-var renderPhotosFragment = function (element, data) {
+var renderPhotosFragment = function (element, photos) {
   var fragment = document.createDocumentFragment();
   var photosElement = element.querySelector('.popup__photos');
   var photoElementRemoved = photosElement.removeChild(photosElement.querySelector('.popup__photo'));
   var photoElementFragment;
 
-  data.forEach(function (photo) {
+  photos.forEach(function (photo) {
     photoElementFragment = photoElementRemoved.cloneNode(true);
     photoElementFragment.src = createPhotoUrl(photo);
     fragment.appendChild(photoElementFragment);
