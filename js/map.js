@@ -42,7 +42,7 @@ var createAdvertisment = function (i) {
 
   return {
     author: {
-      avatar: createAvtarUrl(i + 1)
+      avatar: createAvatarUrl(i + 1)
     },
     location: {
       x: x,
@@ -68,7 +68,7 @@ var createPhotoUrl = function (index) {
   return URL_ASSET_PATTERN.replace('{index}', index);
 };
 
-var createAvtarUrl = function (index) {
+var createAvatarUrl = function (index) {
   return URL_AVATAR_PATTERN.replace('{index}', index);
 };
 
