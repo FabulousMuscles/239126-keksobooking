@@ -162,7 +162,7 @@ var createCardFragment = function (templateElement, data) {
 var renderFeatureElements = function (element, data) {
   var featuresElement = element.querySelector('.popup__features');
   var featureElements = element.querySelectorAll('.popup__feature');
-  Array.prototype.forEach.call(featureElements, function(el, i) {
+  Array.prototype.forEach.call(featureElements, function (el, i) {
     if (el.classList.contains(FEATURE_CLASSNAME_MAP[data[i]])) {
       featuresElement.removeChild(el);
     }
