@@ -21,13 +21,13 @@ var LAYOUT_MAX_Y_SIZE = 630;
 var LAYOUT_MIN_Y_SIZE = 130;
 var ADVERTISMENT_LIMIT = 8;
 var TEMPLATE_PRICE_SIGN = '{price}₽/ночь';
-var FLAT_TYPES_MAP = {
+var TYPE_FLAT_MAP = {
   flat: 'Квартира',
   bungalo: 'Бунгало',
   house: 'Дом',
   palace: 'Дворец'
 };
-var FEATURES_MAP = {
+var FEATURE_CLASSNAME_MAP = {
   wifi: 'popup__feature--wifi',
   dishwasher: 'popup__feature--dishwasher',
   parking: 'popup__feature--parking',
@@ -42,14 +42,14 @@ var createAdvertisment = function (i) {
 
   return {
     author: {
-      avatar: createPhotoUrl(URL_AVATAR_PATTERN, i + 1)
+      avatar: createAvtarUrl(i + 1)
     },
     location: {
       x: x,
       y: y
     },
     offer: {
-      title: preventSuperfluousIterations(ADVERTISMENT_TITLES, i),
+      title: ADVERTISMENT_TITLES[i % ADVERTISMENT_TITLES.length],
       adress: x + ' ' + y,
       price: createRandomNumber(LIMIT_ROOM_PRICE_MIN, LIMIT_ROOM_PRICE_MAX),
       type: ADVERTISMENT_TYPES[createRandomNumber(0, ADVERTISMENT_TYPES.length - 1)],
@@ -64,15 +64,12 @@ var createAdvertisment = function (i) {
   };
 };
 
-var preventSuperfluousIterations = function (arr, i) {
-  if (arr.length % ADVERTISMENT_LIMIT === arr.length) {
-    ADVERTISMENT_LIMIT = arr.length;
-  }
-  return arr[i];
+var createPhotoUrl = function (index) {
+  return URL_ASSET_PATTERN.replace('{index}', index);
 };
 
-var createPhotoUrl = function (urlPhoto, index) {
-  return urlPhoto.replace('{index}', index);
+var createAvtarUrl = function (index) {
+  return URL_AVATAR_PATTERN.replace('{index}', index);
 };
 
 var createTimeText = function (checkin, checkout) {
@@ -150,7 +147,7 @@ var createCardFragment = function (templateElement, data) {
   element.querySelector('.popup__title').textContent = offer.title;
   element.querySelector('.popup__text--address').textContent = offer.address;
   element.querySelector('.popup__text--price').textContent = createPriceText(offer.price);
-  element.querySelector('.popup__type').textContent = FLAT_TYPES_MAP[offer.type];
+  element.querySelector('.popup__type').textContent = TYPE_FLAT_MAP[offer.type];
   element.querySelector('.popup__text--capacity').textContent = createCapacityText(offer.rooms, offer.guests);
   element.querySelector('.popup__text--time').textContent = createTimeText(offer.checkin, offer.checkout);
   element.querySelector('.popup__description').textContent = offer.description;
@@ -163,30 +160,30 @@ var createCardFragment = function (templateElement, data) {
 };
 
 var renderFeatureElements = function (element, data) {
-  var featureContainerElement = element.querySelector('.popup__features');
-  var featureListElements = element.querySelectorAll('.popup__feature');
-  for (var i = featureListElements.length - 1; i >= 0; i--) {
-    if (!featureListElements[i].classList.contains(FEATURES_MAP[data[i]])) {
-      featureContainerElement.removeChild(featureListElements[i]);
+  var featuresElement = element.querySelector('.popup__features');
+  var featureElements = element.querySelectorAll('.popup__feature');
+  Array.prototype.forEach.call(featureElements, function(el, i) {
+    if (el.classList.contains(FEATURE_CLASSNAME_MAP[data[i]])) {
+      featuresElement.removeChild(el);
     }
-  }
+  });
 
-  return featureListElements;
+  return featureElements;
 };
 
 var renderPhotosFragment = function (element, data) {
   var fragment = document.createDocumentFragment();
-  var popupPhotosElement = element.querySelector('.popup__photos');
-  var popupPhotoElementRemoved = popupPhotosElement.removeChild(popupPhotosElement.querySelector('.popup__photo'));
-  var popupPhotoElementFragment;
+  var photosElement = element.querySelector('.popup__photos');
+  var photoElementRemoved = photosElement.removeChild(photosElement.querySelector('.popup__photo'));
+  var photoElementFragment;
 
   data.forEach(function (photo) {
-    popupPhotoElementFragment = popupPhotoElementRemoved.cloneNode(true);
-    popupPhotoElementFragment.src = createPhotoUrl(URL_ASSET_PATTERN, photo);
-    fragment.appendChild(popupPhotoElementFragment);
+    photoElementFragment = photoElementRemoved.cloneNode(true);
+    photoElementFragment.src = createPhotoUrl(photo);
+    fragment.appendChild(photoElementFragment);
   });
 
-  return popupPhotosElement.appendChild(fragment);
+  return photosElement.appendChild(fragment);
 };
 
 var mapElement = document.querySelector('.map');
