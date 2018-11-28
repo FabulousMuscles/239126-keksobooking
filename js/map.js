@@ -1,25 +1,26 @@
 'use strict';
+
 var URL_AVATAR_PATTERN = 'img/avatars/user0{index}.png';
 var URL_ASSET_PATTERN = 'http://o0.github.io/assets/images/tokyo/{index}.jpg';
-var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-var ROOMS_GUESTS_TEMPLATE = '{indexOne} комнаты для {indexTwo} гостей';
-var CHECKIN_AND_CHECKOUT_TEMPLATE = 'Заезд после {indexOne}, выезд до {indexTwo}';
-var MAX_ROOM_PRICE = 1000000;
-var MIN_ROOM_PRICE = 1000;
-var MAX_ROOM_AMOUNT = 5;
-var MIN_ROOM_AMOUNT = 1;
-var MAX_GUESTS_AMOUNT = 10;
-var MIN_GUESTS_AMOUNT = 1;
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECKINS_AND_CHECKOUTS = ['12:00', '13:00', '14:00'];
-var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var PHOTOS = ['hotel1', 'hotel2', 'hotel3'];
+var TEMPLATE_ROOMS_GUESTS = '{rooms} комнаты для {guests} гостей';
+var TEMPLATE_CHECKIN_AND_CHECKOUT = 'Заезд после {checkin}, выезд до {checkout}';
+var LIMIT_ROOM_PRICE_MAX = 1000000;
+var LIMIT_ROOM_PRICE_MIN = 1000;
+var LIMIT_ROOM_AMOUNT_MAX = 5;
+var LIMIT_ROOM_AMOUNT_MIN = 1;
+var LIMIT_GUESTS_AMOUNT_MAX = 10;
+var LIMIT_GUESTS_AMOUNT_MIN = 1;
+var ADVERTISMENT_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var ADVERTISMENT_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var ADVERTISMENT_CHECKINS_AND_CHECKOUTS = ['12:00', '13:00', '14:00'];
+var ADVERTISMENT_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var ADVERTISMENT_PHOTOS = ['hotel1', 'hotel2', 'hotel3'];
 var LAYOUT_MAX_X_SIZE = 1100;
 var LAYOUT_MIN_X_SIZE = 100;
 var LAYOUT_MAX_Y_SIZE = 630;
 var LAYOUT_MIN_Y_SIZE = 130;
 var ADVERTISMENT_LIMIT = 8;
-var PRICE_SIGN = '₽/ночь';
+var TEMPLATE_PRICE_SIGN = '{price}₽/ночь';
 var FLAT_TYPES_MAP = {
   flat: 'Квартира',
   bungalo: 'Бунгало',
@@ -38,6 +39,7 @@ var FEATURES_MAP = {
 var createAdvertisment = function (i) {
   var x = createRandomNumber(LAYOUT_MIN_X_SIZE, LAYOUT_MAX_X_SIZE);
   var y = createRandomNumber(LAYOUT_MIN_Y_SIZE, LAYOUT_MAX_Y_SIZE);
+
   return {
     author: {
       avatar: createPhotoUrl(URL_AVATAR_PATTERN, i + 1)
@@ -47,27 +49,50 @@ var createAdvertisment = function (i) {
       y: y
     },
     offer: {
-      title: TITLES[i],
+      title: preventSuperfluousIterations(ADVERTISMENT_TITLES, i),
       adress: x + ' ' + y,
-      price: createRandomNumber(MIN_ROOM_PRICE, MAX_ROOM_PRICE),
-      type: TYPES[createRandomNumber(0, TYPES.length)],
-      rooms: createRandomNumber(MIN_ROOM_AMOUNT, MAX_ROOM_AMOUNT),
-      guests: createRandomNumber(MIN_GUESTS_AMOUNT, MAX_GUESTS_AMOUNT),
-      checkin: CHECKINS_AND_CHECKOUTS[createRandomNumber(0, CHECKINS_AND_CHECKOUTS.length)],
-      checkout: CHECKINS_AND_CHECKOUTS[createRandomNumber(0, CHECKINS_AND_CHECKOUTS.length)],
-      features: createRandomArrayLength(FEATURES),
+      price: createRandomNumber(LIMIT_ROOM_PRICE_MIN, LIMIT_ROOM_PRICE_MAX),
+      type: ADVERTISMENT_TYPES[createRandomNumber(0, ADVERTISMENT_TYPES.length - 1)],
+      rooms: createRandomNumber(LIMIT_ROOM_AMOUNT_MIN, LIMIT_ROOM_AMOUNT_MAX),
+      guests: createRandomNumber(LIMIT_GUESTS_AMOUNT_MIN, LIMIT_GUESTS_AMOUNT_MAX),
+      checkin: ADVERTISMENT_CHECKINS_AND_CHECKOUTS[createRandomNumber(0, ADVERTISMENT_CHECKINS_AND_CHECKOUTS.length - 1)],
+      checkout: ADVERTISMENT_CHECKINS_AND_CHECKOUTS[createRandomNumber(0, ADVERTISMENT_CHECKINS_AND_CHECKOUTS.length - 1)],
+      features: createRandomArrayLength(ADVERTISMENT_FEATURES),
       description: '',
-      photos: createRandomArray(PHOTOS)
+      photos: createRandomArray(ADVERTISMENT_PHOTOS)
     }
   };
+};
+
+var preventSuperfluousIterations = function (arr, i) {
+  if (arr.length % ADVERTISMENT_LIMIT === arr.length) {
+    ADVERTISMENT_LIMIT = arr.length;
+  }
+  return arr[i];
 };
 
 var createPhotoUrl = function (urlPhoto, index) {
   return urlPhoto.replace('{index}', index);
 };
 
+var createTimeText = function (checkin, checkout) {
+  return TEMPLATE_CHECKIN_AND_CHECKOUT
+      .replace('{checkin}', checkin)
+      .replace('{checkout}', checkout);
+};
+
+var createCapacityText = function (rooms, guests) {
+  return TEMPLATE_ROOMS_GUESTS
+      .replace('{rooms}', rooms)
+      .replace('{guests}', guests);
+};
+
+var createPriceText = function (price) {
+  return TEMPLATE_PRICE_SIGN.replace('{price}', price);
+};
+
 var createRandomNumber = function (min, max) {
-  return Math.floor(min + Math.random() * (max - min));
+  return Math.round(min + Math.random() * (max - min));
 };
 
 var createRandomArray = function (arr) {
@@ -75,7 +100,7 @@ var createRandomArray = function (arr) {
   var result = [];
   var randomRelativeIndex;
   for (var i = 0; i < arr.length; i++) {
-    randomRelativeIndex = createRandomNumber(0, copy.length);
+    randomRelativeIndex = createRandomNumber(0, copy.length - 1);
     result.push(copy[randomRelativeIndex]);
     copy.splice(randomRelativeIndex, 1);
   }
@@ -83,9 +108,7 @@ var createRandomArray = function (arr) {
 };
 
 var createRandomArrayLength = function (arr) {
-  var copy = arr.slice(0, createRandomNumber(1, arr.length));
-
-  return copy;
+  return arr.slice(0, createRandomNumber(1, arr.length));
 };
 
 var createAdvertisments = function () {
@@ -100,16 +123,15 @@ var createAdvertisments = function () {
 
 var createMapPinElement = function (templateElement, data) {
   var element = templateElement.cloneNode(true);
-
-  element.style.left = data.location.x.toString() + 'px';
-  element.style.top = data.location.y.toString() + 'px';
+  element.style.left = data.location.x + 'px';
+  element.style.top = data.location.y + 'px';
   element.querySelector('img').src = data.author.avatar;
   element.querySelector('img').alt = data.offer.title;
 
   return element;
 };
 
-var createMapPinFragment = function (templateElement, advertisments) {
+var createPinFragment = function (templateElement, advertisments) {
   var fragment = document.createDocumentFragment();
 
   advertisments.forEach(function (advertisment) {
@@ -121,46 +143,44 @@ var createMapPinFragment = function (templateElement, advertisments) {
   return fragment;
 };
 
-var createText = function (string, indexOne, indexTwo) {
-  var replacedString = string.replace('{indexOne}', indexOne);
-
-  return replacedString.replace('{indexTwo}', indexTwo);
-};
-
-var createMapCardFragment = function (templateElement, data) {
+var createCardFragment = function (templateElement, data) {
   var element = templateElement.cloneNode(true);
-  element.querySelector('.popup__title').textContent = data.offer.title;
-  element.querySelector('.popup__text--address').textContent = data.offer.address;
-  element.querySelector('.popup__text--price').textContent = data.offer.price + PRICE_SIGN;
-  element.querySelector('.popup__type').textContent = FLAT_TYPES_MAP[data.offer.type];
-  element.querySelector('.popup__text--capacity').textContent = createText(ROOMS_GUESTS_TEMPLATE, data.offer.rooms.toString(), data.offer.guests.toString());
-  element.querySelector('.popup__text--time').textContent = createText(CHECKIN_AND_CHECKOUT_TEMPLATE, data.offer.checkin, data.offer.checkout);
-  renderFeatureElements(element, data);
-  renderPhotosElements(element, data);
-  element.querySelector('.popup__description').textContent = data.offer.description;
+  var offer = data.offer;
+
+  element.querySelector('.popup__title').textContent = offer.title;
+  element.querySelector('.popup__text--address').textContent = offer.address;
+  element.querySelector('.popup__text--price').textContent = createPriceText(offer.price);
+  element.querySelector('.popup__type').textContent = FLAT_TYPES_MAP[offer.type];
+  element.querySelector('.popup__text--capacity').textContent = createCapacityText(offer.rooms, offer.guests);
+  element.querySelector('.popup__text--time').textContent = createTimeText(offer.checkin, offer.checkout);
+  element.querySelector('.popup__description').textContent = offer.description;
   element.querySelector('.popup__avatar').src = data.author.avatar;
+
+  renderFeatureElements(element, offer.features);
+  renderPhotosFragment(element, offer.photos);
 
   return element;
 };
 
 var renderFeatureElements = function (element, data) {
   var featureContainerElement = element.querySelector('.popup__features');
-  var featureListElement = element.querySelectorAll('.popup__feature');
-  for (var i = featureListElement.length - 1; i >= 0; i--) {
-    if (featureListElement[i].classList[1] !== FEATURES_MAP[data.offer.features[i]]) {
-      featureContainerElement.removeChild(featureListElement[i]);
+  var featureListElements = element.querySelectorAll('.popup__feature');
+  for (var i = featureListElements.length - 1; i >= 0; i--) {
+    if (!featureListElements[i].classList.contains(FEATURES_MAP[data[i]])) {
+      featureContainerElement.removeChild(featureListElements[i]);
     }
   }
 
-  return featureListElement;
+  return featureListElements;
 };
 
-var renderPhotosElements = function (element, data) {
+var renderPhotosFragment = function (element, data) {
   var fragment = document.createDocumentFragment();
   var popupPhotosElement = element.querySelector('.popup__photos');
   var popupPhotoElementRemoved = popupPhotosElement.removeChild(popupPhotosElement.querySelector('.popup__photo'));
   var popupPhotoElementFragment;
-  data.offer.photos.forEach(function (photo) {
+
+  data.forEach(function (photo) {
     popupPhotoElementFragment = popupPhotoElementRemoved.cloneNode(true);
     popupPhotoElementFragment.src = createPhotoUrl(URL_ASSET_PATTERN, photo);
     fragment.appendChild(popupPhotoElementFragment);
@@ -170,20 +190,15 @@ var renderPhotosElements = function (element, data) {
 };
 
 var mapElement = document.querySelector('.map');
-mapElement.classList.remove('map--faded');
-
-var mapPinTemplate = document.querySelector('#pin').content
-    .querySelector('.map__pin');
+var mapPinTemplateElement = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapPinsElement = document.querySelector('.map__pins');
-
-var mapCardTemplate = document.querySelector('#card').content
-    .querySelector('.map__card');
-
+var mapCardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
 var mapFiltersContainerElement = document.querySelector('.map__filters-container');
 
 var advertisments = createAdvertisments();
-var mapPinFragment = createMapPinFragment(mapPinTemplate, advertisments);
-var mapCardElement = createMapCardFragment(mapCardTemplate, advertisments[0]);
+var mapPinFragment = createPinFragment(mapPinTemplateElement, advertisments);
+var mapCardElement = createCardFragment(mapCardTemplateElement, advertisments[0]);
 
+mapElement.classList.remove('map--faded');
 mapPinsElement.appendChild(mapPinFragment);
 mapElement.insertBefore(mapCardElement, mapFiltersContainerElement);
