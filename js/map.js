@@ -35,6 +35,9 @@ var FEATURE_CLASSNAME_MAP = {
   elevator: 'popup__feature--elevator',
   conditioner: 'popup__feature--conditioner'
 };
+var KEYCODE_ESC = 27;
+var ADRESS_ORIGIN_X = 570;
+var ADRESS_ORIGIN_Y = 375;
 
 var createAdvertisment = function (i) {
   var x = createRandomNumber(LAYOUT_MIN_X_SIZE, LAYOUT_MAX_X_SIZE);
@@ -118,12 +121,36 @@ var createAdvertisments = function () {
   return advertisments;
 };
 
-var createMapPinElement = function (templateElement, data) {
+var popupEscKeydownHandler = function (evt) {
+  if (evt.keyCode === KEYCODE_ESC) {
+    closePopup();
+  }
+};
+
+var closePopup = function () {
+  mapElement.removeChild(mapCardElement);
+  mapCardElement = null;
+  document.removeEventListener('keydown', popupEscKeydownHandler);
+};
+
+var openPopup = function (i) {
+  if (mapCardElement) {
+    closePopup();
+  }
+  mapCardElement = cardFragmentHandler(i);
+  mapElement.insertBefore(mapCardElement, mapFiltersContainerElement);
+  document.addEventListener('keydown', popupEscKeydownHandler);
+};
+
+var createMapPinElement = function (templateElement, data, i) {
   var element = templateElement.cloneNode(true);
   element.style.left = data.location.x + 'px';
   element.style.top = data.location.y + 'px';
   element.querySelector('img').src = data.author.avatar;
   element.querySelector('img').alt = data.offer.title;
+  element.addEventListener('click', function () {
+    openPopup(i);
+  });
 
   return element;
 };
@@ -131,9 +158,9 @@ var createMapPinElement = function (templateElement, data) {
 var createPinFragment = function (templateElement, advertisments) {
   var fragment = document.createDocumentFragment();
 
-  advertisments.forEach(function (advertisment) {
+  advertisments.forEach(function (advertisment, i) {
     fragment.appendChild(
-        createMapPinElement(templateElement, advertisment)
+        createMapPinElement(templateElement, advertisment, i)
     );
   });
 
@@ -152,11 +179,20 @@ var createCardFragment = function (templateElement, data) {
   element.querySelector('.popup__text--time').textContent = createTimeText(offer.checkin, offer.checkout);
   element.querySelector('.popup__description').textContent = offer.description;
   element.querySelector('.popup__avatar').src = data.author.avatar;
+  element.addEventListener('click', function (evt) {
+    if (evt.target.classList.contains('popup__close')) {
+      closePopup();
+    }
+  });
 
   renderFeatureElements(element, offer.features);
   renderPhotosFragment(element, offer.photos);
 
   return element;
+};
+
+var cardFragmentHandler = function (i) {
+  return createCardFragment(mapCardTemplateElement, advertisments[i]);
 };
 
 var renderFeatureElements = function (element, features) {
@@ -187,15 +223,22 @@ var renderPhotosFragment = function (element, photos) {
 };
 
 var mapElement = document.querySelector('.map');
+var mapMainPinElement = mapElement.querySelector('.map__pin--main');
 var mapPinTemplateElement = document.querySelector('#pin').content.querySelector('.map__pin');
-var mapPinsElement = document.querySelector('.map__pins');
+var mapPinsElement = mapElement.querySelector('.map__pins');
 var mapCardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
-var mapFiltersContainerElement = document.querySelector('.map__filters-container');
+var mapFiltersContainerElement = mapElement.querySelector('.map__filters-container');
+var formContainerElement = document.querySelector('.ad-form');
+var adressElement = formContainerElement.querySelector('#address');
 
+var mapCardElement;
 var advertisments = createAdvertisments();
 var mapPinFragment = createPinFragment(mapPinTemplateElement, advertisments);
-var mapCardElement = createCardFragment(mapCardTemplateElement, advertisments[0]);
+adressElement.value = ADRESS_ORIGIN_X + ' ' + ADRESS_ORIGIN_Y;
 
-mapElement.classList.remove('map--faded');
-mapPinsElement.appendChild(mapPinFragment);
-mapElement.insertBefore(mapCardElement, mapFiltersContainerElement);
+mapMainPinElement.addEventListener('mouseup', function (evt) {
+  mapElement.classList.remove('map--faded');
+  formContainerElement.classList.remove('ad-form--disabled');
+  mapPinsElement.appendChild(mapPinFragment);
+  adressElement.value = evt.target.offsetLeft + ' ' + evt.target.offsetTop;
+});
