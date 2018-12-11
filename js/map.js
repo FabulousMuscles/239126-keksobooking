@@ -117,11 +117,11 @@ var createAdvertisments = function () {
   return advertisments;
 };
 
-var createPinClickHander = function(data) {
+var createPinClickHander = function (data) {
   return function () {
     openCard(data);
   };
-}
+};
 
 var createPinElement = function (data) {
   var element = templatePinElement.cloneNode(true);
@@ -141,14 +141,14 @@ var createPinsFragment = function () {
 
   advertisments.forEach(function (advertisment) {
     fragment.appendChild(
-      createPinElement(advertisment)
+        createPinElement(advertisment)
     );
   });
 
   return fragment;
 };
 
-var renderCardElement = function(cardElement, data) {
+var renderCardElement = function (cardElement, data) {
   var offer = data.offer;
   var featuresElement = cardElement.querySelector('.popup__features');
   var photosElement = cardElement.querySelector('.popup__photos');
@@ -169,14 +169,14 @@ var renderCardElement = function(cardElement, data) {
 var renderFeatureElements = function (featuresElement, features) {
   var fragment = document.createDocumentFragment();
 
-  features.forEach(function(feature) {
+  features.forEach(function (feature) {
     var featureElement = document.createElement('li');
-    featureElement.className = "popup__feature popup__feature--" + feature;
-    fragment.appendChild(featureElement)
-  })
+    featureElement.className = 'popup__feature popup__feature--' + feature;
+    fragment.appendChild(featureElement);
+  });
 
   featuresElement.innerHTML = '';
-  featuresElement.appendChild(fragment)
+  featuresElement.appendChild(fragment);
 };
 
 var renderPhotosFragment = function (photosElement, photos) {
@@ -217,7 +217,7 @@ var openCard = function (data) {
     element.addEventListener('click', cardClickHandler);
     document.addEventListener('keydown', documentKeydownHandler);
 
-    cardElement = element
+    cardElement = element;
   } else {
     renderCardElement(cardElement, data);
   }
