@@ -21,11 +21,17 @@ var LAYOUT_MAX_Y_SIZE = 630;
 var LAYOUT_MIN_Y_SIZE = 130;
 var ADVERTISMENT_LIMIT = 8;
 var TEMPLATE_PRICE_SIGN = '{price}₽/ночь';
-var TYPE_FLAT_MAP = {
+var FLAT_TYPE_MAP = {
   flat: 'Квартира',
   bungalo: 'Бунгало',
   house: 'Дом',
   palace: 'Дворец'
+};
+var FLAT_PRICE_MAP = {
+  flat: 1000,
+  bungalo: 0,
+  house: 5000,
+  palace: 10000
 };
 var PHOTO_WIDTH = 45;
 var PHOTO_HEIGHT = 40;
@@ -156,7 +162,7 @@ var renderCardElement = function (cardElement, data) {
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
   cardElement.querySelector('.popup__text--price').textContent = createPriceText(offer.price);
-  cardElement.querySelector('.popup__type').textContent = TYPE_FLAT_MAP[offer.type];
+  cardElement.querySelector('.popup__type').textContent = FLAT_TYPE_MAP[offer.type];
   cardElement.querySelector('.popup__text--capacity').textContent = createCapacityText(offer.rooms, offer.guests);
   cardElement.querySelector('.popup__text--time').textContent = createTimeText(offer.checkin, offer.checkout);
   cardElement.querySelector('.popup__description').textContent = offer.description;
@@ -243,6 +249,73 @@ var pinMouseDownHandler = function (evt) {
 
   fieldAddressElement.value = evt.target.offsetLeft + ' ' + evt.target.offsetTop;
   mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
+  formElement.addEventListener('click', formElementClickHandler);
+};
+
+
+var setFormDefaultResults = function () {
+  fieldAddressElement.value = ADRESS_ORIGIN_X + ' ' + ADRESS_ORIGIN_Y;
+  flatPrice.placeholder = FLAT_PRICE_MAP['flat'];
+  roomNumber.options[0].selected = true;
+  flatType.options[1].selected = true;
+  timeIn.options[0].selected = true;
+  timeOut.options[0].selected = true;
+  title.value = '';
+  price.value = '';
+  setRoomSelect(roomNumber.options[0], guestsCapacity.options);
+};
+
+var setTimeSelect = function (target, options) {
+  for (var i = 0; i < options.length; i++) {
+    if (target.value === options[i].value) {
+      options[i].selected = true;
+      return;
+    }
+  }
+};
+
+var disableAllGuests = function (guest) {
+  if (guest.value === '0') {
+    guest.selected = true;
+  } else {
+    guest.disabled = true;
+  }
+};
+
+var setRoomForGuests = function (room, guest) {
+  guest.disabled = false;
+  if (room.value === '100') {
+    disableAllGuests(guest);
+  } else if (room.value === guest.value) {
+    guest.selected = true;
+  } else if (guest.value === '0' || room.value < guest.value) {
+    guest.disabled = true;
+  }
+};
+
+
+var setRoomSelect = function (room, guests) {
+  for (var i = 0; i < guests.length; i++) {
+    setRoomForGuests(room, guests[i]);
+  }
+};
+
+var formElementClickHandler = function (evt) {
+  if (evt.target.parentElement.id === 'type') {
+    flatPrice.min = FLAT_PRICE_MAP[evt.target.value];
+    flatPrice.placeholder = flatPrice.min;
+  } else if (evt.target.parentElement.id === 'timein') {
+    setTimeSelect(evt.target, timeOut.options);
+  } else if (evt.target.parentElement.id === 'timeout') {
+    setTimeSelect(evt.target, timeIn.options);
+  } else if (evt.target.parentElement.id === 'room_number') {
+    setRoomSelect(evt.target, guestsCapacity.options);
+  }
+};
+
+var formElementResetHandler = function (evt) {
+  evt.preventDefault();
+  setFormDefaultResults();
 };
 
 var cardElement;
@@ -256,9 +329,18 @@ var templateCardElement = document.querySelector('#card').content.querySelector(
 
 var formElement = document.querySelector('.ad-form');
 var fieldAddressElement = formElement.querySelector('#address');
+var flatType = formElement.querySelector('#type');
+var flatPrice = formElement.querySelector('#price');
+var timeIn = formElement.querySelector('#timein');
+var timeOut = formElement.querySelector('#timeout');
+var roomNumber = formElement.querySelector('#room_number');
+var guestsCapacity = formElement.querySelector('#capacity');
+var title = formElement.querySelector('#title');
+var price = formElement.querySelector('#price');
 
 var advertisments = createAdvertisments();
 
-fieldAddressElement.value = ADRESS_ORIGIN_X + ' ' + ADRESS_ORIGIN_Y;
+setFormDefaultResults();
 
 mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
+formElement.addEventListener('reset', formElementResetHandler);
