@@ -40,6 +40,14 @@ var FLAT_PRICE_MAP = {
   house: 5000,
   palace: 10000
 };
+
+var VALIDATION_ROOM_CAPACITY_MAP = {
+  "1": ["1"],
+  "2": ["1", "2"],
+  "3": ["1", "2", "3"],
+  "100": ["0"]
+};
+
 var PHOTO_WIDTH = 45;
 var PHOTO_HEIGHT = 40;
 var KEYCODE_ESC = 27;
@@ -249,30 +257,10 @@ var documentKeydownHandler = function (evt) {
   }
 };
 
-var VALIDATION_ROOM_CAPACITY_MAP = {
-  "1": ["1"],
-  "2": ["1", "2"],
-  "3": ["1", "2", "3"],
-  "100": ["0"]
-};
-
-/*var fieldRoomNumberChangeHandler = function() {
-  var fieldCapacityValue = ..
-  var fieldRoomNumberValue = ..
-
-  var allowCapacityValues = VALIDATION_ROOM_CAPACITY_MAP[fieldRoomNumberValue];
-
-  capacityOptions ->
-    if option.value in allowCapacityValues
-      then remove disabled attribute for option
-      else add disabled attribute for option
-}*/
-
 var pinMouseDownHandler = function (evt) {
   createPins();
 
   mapElement.classList.remove('map--faded');
-  formElement.classList.remove('ad-form--disabled');
 
   syncFieldAddressWithMainPin();
 
@@ -283,76 +271,73 @@ var pinMouseDownHandler = function (evt) {
 
 var syncFieldAddressWithMainPin = function() {
   fieldAddressElement.value = mainPinElement.offsetLeft + ', ' + mainPinElement.offsetTop;
-}
+};
 
 var resetMainPinPosition = function() {
   mainPinElement.style.left = ADDRESS_ORIGIN_X;
   mainPinElement.style.top =  ADDRESS_ORIGIN_Y;
-}
+};
 
 var setFormDefaultResults = function () {
   formElement.reset();
-
+  setFlatPriceValue();
+  setFieldCapacityValue();
   resetMainPinPosition();
   syncFieldAddressWithMainPin();
 };
 
-var fieldflatTypeElementChangeHandler = function () {
-  var flatTypeSelected = fieldFlatTypeElement.options.selectedIndex;
-  var flatTypeValue = fieldFlatTypeElement.options[flatTypeSelected].value;
-
-  fieldFlatPriceElement.min = FLAT_PRICE_MAP[flatTypeValue];
+var setFlatPriceValue = function () {
+  fieldFlatPriceElement.min = FLAT_PRICE_MAP[fieldFlatTypeElement.value];
   fieldFlatPriceElement.placeholder = fieldFlatPriceElement.min;
 };
 
-var fieldTimeInElementChangeHandler = function () {
-  var fieldTimeInSelected = fieldTimeInElement.options.selectedIndex;
-  fieldTimeOutElement.options[fieldTimeInSelected].selected = true;
-};
+var setFieldCapacityValue = function () {
+  var capacityValues = VALIDATION_ROOM_CAPACITY_MAP[fieldRoomNumberElement.value];
 
-var fieldTimeOutElementChangeHandler = function () {
-  var fieldTimeOutSelected = fieldTimeOutElement.options.selectedIndex;
-  fieldTimeInElement.options[fieldTimeOutSelected].selected = true;
-};
-
-var fieldRoomNumberElementChangeHandler = function () {
-  var fieldRoomNumberValue = fieldRoomNumberElement.options[fieldRoomNumberElement.options.selectedIndex].value;
-  var allowCapacityValues = VALIDATION_ROOM_CAPACITY_MAP[fieldRoomNumberValue];
-  var allowCapacityValuesCopy = allowCapacityValues.slice();
-
-  /*Array.prototype.forEach.call(fieldCapacityElement.options, function(option) {
-    option.disabled = true;
-  });
-
-  allowCapacityValues.forEach(function (allowCapacityValue) {
-    Array.prototype.forEach.call(fieldCapacityElement.options, function(option) {
-      if (allowCapacityValue === option.value) {
-        option.disabled = false;
-      }
-  });
-  });*/
-
-  Array.prototype.forEach.call(fieldCapacityElement.options, function(option, i) {
-    for (var j = 0; j < allowCapacityValuesCopy.length; j++) {
-      if (allowCapacityValues[j] === option.value) {
-        option.disabled = false;
-        allowCapacityValuesCopy.splice(i, 1);
-      } else {
-        option.disabled = true;
-      }
+  Array.prototype.forEach.call(fieldCapacityElement.options, function(optionElement) {
+    if (capacityValues.indexOf(optionElement.value) !== -1) {
+      optionElement.disabled = false;
+      optionElement.selected = true;
+    } else {
+      optionElement.disabled = true;
     }
   });
 };
 
+var fieldFlatTypeElementChangeHandler = function () {
+  setFlatPriceValue();
+};
+
+var fieldTimeInElementChangeHandler = function () {
+  fieldTimeOutElement.value = fieldTimeInElement.value;
+};
+
+var fieldTimeOutElementChangeHandler = function () {
+  fieldTimeInElement.value = fieldTimeOutElement.value;
+};
+
+var fieldRoomNumberElementChangeHandler = function () {
+  setFieldCapacityValue();
+};
+
 
 var activateForm = function () {
-  fieldFlatTypeElement.addEventListener('change', fieldflatTypeElementChangeHandler);
+  formElement.classList.remove('ad-form--disabled');
+  fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
   fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
   fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
   fieldRoomNumberElement.addEventListener('change', fieldRoomNumberElementChangeHandler);
 };
 
-var formElementResetHandler = function (evt) {
+var deactivateForm = function () {
+  formElement.classList.add('ad-form--disabled');
+  fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
+  fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
+  fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
+  fieldRoomNumberElement.removeEventListener('change', fieldRoomNumberElementChangeHandler);
+};
+
+var resetButtonElementClickHandler = function (evt) {
   evt.preventDefault();
   setFormDefaultResults();
 };
@@ -367,6 +352,7 @@ var templatePinElement = document.querySelector('#pin').content.querySelector('.
 var templateCardElement = document.querySelector('#card').content.querySelector('.map__card');
 
 var formElement = document.querySelector('.ad-form');
+var resetButtonElement = formElement.querySelector('.ad-form__reset');
 var fieldAddressElement = formElement.querySelector('#address');
 
 var fieldRoomNumberElement = formElement.querySelector('#room_number');
@@ -389,4 +375,4 @@ var advertisments = createAdvertisments();
 setFormDefaultResults();
 
 mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
-// formElement.addEventListener('reset', formElementResetHandler);
+resetButtonElement.addEventListener('click', resetButtonElementClickHandler);
