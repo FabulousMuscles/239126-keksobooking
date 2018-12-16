@@ -261,9 +261,6 @@ var pinMouseDownHandler = function (evt) {
   createPins();
 
   mapElement.classList.remove('map--faded');
-
-  syncFieldAddressWithMainPin();
-
   activateForm();
 
   mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
@@ -278,7 +275,7 @@ var resetMainPinPosition = function() {
   mainPinElement.style.top =  ADDRESS_ORIGIN_Y;
 };
 
-var setFormDefaultResults = function () {
+var setDefaultFormValues = function () {
   formElement.reset();
   setFlatPriceValue();
   setFieldCapacityValue();
@@ -291,13 +288,22 @@ var setFlatPriceValue = function () {
   fieldFlatPriceElement.placeholder = fieldFlatPriceElement.min;
 };
 
+var setRoomNumberValue = function () {
+  if (fieldRoomNumberElement.value === '100') {
+    fieldCapacityElement.value = '0';
+  } else {
+    fieldCapacityElement.value = fieldRoomNumberElement.value;
+  }
+};
+
 var setFieldCapacityValue = function () {
   var capacityValues = VALIDATION_ROOM_CAPACITY_MAP[fieldRoomNumberElement.value];
+
+  setRoomNumberValue();
 
   Array.prototype.forEach.call(fieldCapacityElement.options, function(optionElement) {
     if (capacityValues.indexOf(optionElement.value) !== -1) {
       optionElement.disabled = false;
-      optionElement.selected = true;
     } else {
       optionElement.disabled = true;
     }
@@ -320,9 +326,9 @@ var fieldRoomNumberElementChangeHandler = function () {
   setFieldCapacityValue();
 };
 
-
 var activateForm = function () {
   formElement.classList.remove('ad-form--disabled');
+  syncFieldAddressWithMainPin();
   fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
   fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
   fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
@@ -339,7 +345,7 @@ var deactivateForm = function () {
 
 var resetButtonElementClickHandler = function (evt) {
   evt.preventDefault();
-  setFormDefaultResults();
+  setDefaultFormValues()
 };
 
 var cardElement;
@@ -365,14 +371,10 @@ var fieldFlatTypeElement = formElement.querySelector('#type');
 var fieldFlatPriceElement = formElement.querySelector('#price');
 
 var fieldTitleElement = formElement.querySelector('#title');
-var fieldPriceElement = formElement.querySelector('#price');
 
 var advertisments = createAdvertisments();
 
-// activateForm
-// deactivateForm
-
-setFormDefaultResults();
+setDefaultFormValues();
 
 mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
 resetButtonElement.addEventListener('click', resetButtonElementClickHandler);
