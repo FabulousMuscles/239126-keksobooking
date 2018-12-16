@@ -42,10 +42,10 @@ var FLAT_PRICE_MAP = {
 };
 
 var VALIDATION_ROOM_CAPACITY_MAP = {
-  "1": ["1"],
-  "2": ["1", "2"],
-  "3": ["1", "2", "3"],
-  "100": ["0"]
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
 };
 
 var PHOTO_WIDTH = 45;
@@ -257,7 +257,7 @@ var documentKeydownHandler = function (evt) {
   }
 };
 
-var pinMouseDownHandler = function (evt) {
+var pinMouseDownHandler = function () {
   createPins();
 
   mapElement.classList.remove('map--faded');
@@ -266,13 +266,13 @@ var pinMouseDownHandler = function (evt) {
   mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
 };
 
-var syncFieldAddressWithMainPin = function() {
+var syncFieldAddressWithMainPin = function () {
   fieldAddressElement.value = mainPinElement.offsetLeft + ', ' + mainPinElement.offsetTop;
 };
 
-var resetMainPinPosition = function() {
+var resetMainPinPosition = function () {
   mainPinElement.style.left = ADDRESS_ORIGIN_X;
-  mainPinElement.style.top =  ADDRESS_ORIGIN_Y;
+  mainPinElement.style.top = ADDRESS_ORIGIN_Y;
 };
 
 var setDefaultFormValues = function () {
@@ -293,7 +293,7 @@ var setFieldCapacityValue = function () {
 
   fieldCapacityElement.value = capacityValues[0];
 
-  Array.prototype.forEach.call(fieldCapacityElement.options, function(optionElement) {
+  Array.prototype.forEach.call(fieldCapacityElement.options, function (optionElement) {
     if (capacityValues.indexOf(optionElement.value) !== -1) {
       optionElement.disabled = false;
     } else {
@@ -329,6 +329,7 @@ var activateForm = function () {
 
 var deactivateForm = function () {
   formElement.classList.add('ad-form--disabled');
+  setDefaultFormValues();
   fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
   fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
   fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
@@ -337,7 +338,7 @@ var deactivateForm = function () {
 
 var resetButtonElementClickHandler = function (evt) {
   evt.preventDefault();
-  setDefaultFormValues()
+  setDefaultFormValues();
 };
 
 var cardElement;
@@ -362,11 +363,13 @@ var fieldTimeOutElement = formElement.querySelector('#timeout');
 var fieldFlatTypeElement = formElement.querySelector('#type');
 var fieldFlatPriceElement = formElement.querySelector('#price');
 
-var fieldTitleElement = formElement.querySelector('#title');
-
 var advertisments = createAdvertisments();
 
 setDefaultFormValues();
 
 mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
 resetButtonElement.addEventListener('click', resetButtonElementClickHandler);
+formElement.addEventListener('submit', function (evt) {
+  evt.preventDefault();
+  deactivateForm();
+});
