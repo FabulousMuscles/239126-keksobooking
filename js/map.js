@@ -288,18 +288,10 @@ var setFlatPriceValue = function () {
   fieldFlatPriceElement.placeholder = fieldFlatPriceElement.min;
 };
 
-var setRoomNumberValue = function () {
-  if (fieldRoomNumberElement.value === '100') {
-    fieldCapacityElement.value = '0';
-  } else {
-    fieldCapacityElement.value = fieldRoomNumberElement.value;
-  }
-};
-
 var setFieldCapacityValue = function () {
   var capacityValues = VALIDATION_ROOM_CAPACITY_MAP[fieldRoomNumberElement.value];
 
-  setRoomNumberValue();
+  fieldCapacityElement.value = capacityValues[0];
 
   Array.prototype.forEach.call(fieldCapacityElement.options, function(optionElement) {
     if (capacityValues.indexOf(optionElement.value) !== -1) {
