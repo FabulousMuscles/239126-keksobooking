@@ -282,21 +282,8 @@ var pinMouseDownHandler = function (evt) {
       y: moveEvt.clientY
     };
 
-    mainPinElement.style.top = (mainPinElement.offsetTop - shift.y) + 'px';
-    mainPinElement.style.left = (mainPinElement.offsetLeft - shift.x) + 'px';
-
-    if (mainPinElement.offsetLeft < LAYOUT_MIN_X_SIZE) {
-      mainPinElement.style.left = LAYOUT_MIN_X_SIZE + 'px';
-    } else if (mainPinElement.offsetLeft > LAYOUT_MAX_X_SIZE) {
-      mainPinElement.style.left = LAYOUT_MAX_X_SIZE + 'px';
-    }
-
-    if (mainPinElement.offsetTop < LAYOUT_MIN_Y_SIZE) {
-      mainPinElement.style.top = LAYOUT_MIN_Y_SIZE + 'px';
-    } else if (mainPinElement.offsetTop > LAYOUT_MAX_Y_SIZE) {
-      mainPinElement.style.top = LAYOUT_MAX_Y_SIZE + 'px';
-    }
-
+    mainPinElement.style.top = Math.max(LAYOUT_MIN_Y_SIZE, Math.min((mainPinElement.offsetTop - shift.y), LAYOUT_MAX_Y_SIZE)) + 'px';
+    mainPinElement.style.left = Math.max(LAYOUT_MIN_X_SIZE, Math.min((mainPinElement.offsetLeft - shift.x), LAYOUT_MAX_X_SIZE)) + 'px';
     syncFieldAddressWithMainPin();
   };
 
