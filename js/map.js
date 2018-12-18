@@ -258,13 +258,9 @@ var documentKeydownHandler = function (evt) {
 };
 
 var pinMouseDownHandler = function (evt) {
-  if (!mapIsActive) {
-    mapElement.classList.remove('map--faded');
-    createPins();
-    activateForm();
-
-    mapIsActive = true;
-  }
+  mapElement.classList.remove('map--faded');
+  createPins();
+  activateForm();
 
   var startCoords = {
     x: evt.clientX,
@@ -291,7 +287,7 @@ var pinMouseDownHandler = function (evt) {
     document.removeEventListener('mousemove', pinMouseMoveHandler);
     document.removeEventListener('mouseup', pinMouseUpHandler);
   };
-
+  mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
   document.addEventListener('mousemove', pinMouseMoveHandler);
   document.addEventListener('mouseup', pinMouseUpHandler);
 };
@@ -372,7 +368,6 @@ var resetButtonElementClickHandler = function (evt) {
 };
 
 var cardElement;
-var mapIsActive = false;
 var mapElement = document.querySelector('.map');
 var mainPinElement = mapElement.querySelector('.map__pin--main');
 var pinsElement = mapElement.querySelector('.map__pins');
