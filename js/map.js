@@ -20,10 +20,10 @@ var ADVERTISMENT_CHECKINS_AND_CHECKOUTS = ['12:00', '13:00', '14:00'];
 var ADVERTISMENT_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var ADVERTISMENT_PHOTOS = ['hotel1', 'hotel2', 'hotel3'];
 
-var LAYOUT_MAX_X_SIZE = 1100;
-var LAYOUT_MIN_X_SIZE = 100;
+var LAYOUT_MAX_X_SIZE = 1135;
+var LAYOUT_MIN_X_SIZE = 0;
 var LAYOUT_MAX_Y_SIZE = 630;
-var LAYOUT_MIN_Y_SIZE = 130;
+var LAYOUT_MIN_Y_SIZE = 100;
 
 var ADVERTISMENT_LIMIT = 8;
 
@@ -257,13 +257,39 @@ var documentKeydownHandler = function (evt) {
   }
 };
 
-var pinMouseDownHandler = function () {
-  createPins();
-
+var pinMouseDownHandler = function (evt) {
   mapElement.classList.remove('map--faded');
+  createPins();
   activateForm();
 
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var pinMouseMoveHandler = function (moveEvt) {
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    mainPinElement.style.top = Math.max(LAYOUT_MIN_Y_SIZE, Math.min((mainPinElement.offsetTop - shift.y), LAYOUT_MAX_Y_SIZE)) + 'px';
+    mainPinElement.style.left = Math.max(LAYOUT_MIN_X_SIZE, Math.min((mainPinElement.offsetLeft - shift.x), LAYOUT_MAX_X_SIZE)) + 'px';
+    syncFieldAddressWithMainPin();
+  };
+
+  var pinMouseUpHandler = function () {
+    document.removeEventListener('mousemove', pinMouseMoveHandler);
+    document.removeEventListener('mouseup', pinMouseUpHandler);
+  };
   mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
+  document.addEventListener('mousemove', pinMouseMoveHandler);
+  document.addEventListener('mouseup', pinMouseUpHandler);
 };
 
 var syncFieldAddressWithMainPin = function () {
@@ -271,8 +297,8 @@ var syncFieldAddressWithMainPin = function () {
 };
 
 var resetMainPinPosition = function () {
-  mainPinElement.style.left = ADDRESS_ORIGIN_X;
-  mainPinElement.style.top = ADDRESS_ORIGIN_Y;
+  mainPinElement.style.left = ADDRESS_ORIGIN_X + 'px';
+  mainPinElement.style.top = ADDRESS_ORIGIN_Y + 'px';
 };
 
 var setDefaultFormValues = function () {
