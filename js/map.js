@@ -265,7 +265,7 @@ var pinMouseDownHandler = function (evt) {
 
     mapIsActive = true;
   }
-  mainPinElement.blur();
+
   var startCoords = {
     x: evt.clientX,
     y: evt.clientY
