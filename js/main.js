@@ -19,7 +19,7 @@
     mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
   };
 
-  var pinMouseDownHandler = window.mainPin.activate(onMainPinMouseUp, onMainPinMouseMove, mainPinElement, removePinMouseDown);
+  var pinMouseDownHandler = window.mainPin.activate(onMainPinMouseUp, onMainPinMouseMove, removePinMouseDown);
 
   mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
 

@@ -39,8 +39,8 @@
           onMouseUpCallback();
           document.removeEventListener('mousemove', pinMouseMoveHandler);
           document.removeEventListener('mouseup', pinMouseUpHandler);
+          removeMouseDownCallback();
         };
-        removeMouseDownCallback();
         document.addEventListener('mousemove', pinMouseMoveHandler);
         document.addEventListener('mouseup', pinMouseUpHandler);
       };
