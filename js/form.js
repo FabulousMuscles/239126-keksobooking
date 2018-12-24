@@ -1,6 +1,9 @@
 'use strict';
 (function () {
 
+  var ADDRESS_ORIGIN_X = 570;
+  var ADDRESS_ORIGIN_Y = 375;
+
   var FLAT_PRICE_MAP = {
     flat: 1000,
     bungalo: 0,
@@ -15,17 +18,21 @@
     '100': ['0']
   };
 
-  var syncFieldAddressWithMainPin = function () {
-    fieldAddressElement.value = window.dragAndDrop.mainPinElement.offsetLeft + ', ' + window.dragAndDrop.mainPinElement.offsetTop;
+  var resetMainPinPosition = function () {
+    mainPinElement.style.left = ADDRESS_ORIGIN_X + 'px';
+    mainPinElement.style.top = ADDRESS_ORIGIN_Y + 'px';
   };
 
+  var setFieldAddress = function () {
+    fieldAddressElement.value = mainPinElement.offsetLeft + ', ' + mainPinElement.offsetTop;
+  };
 
   var setDefaultFormValues = function () {
     formElement.reset();
     setFlatPriceValue();
     setFieldCapacityValue();
-    window.dragAndDrop.resetMainPinPosition();
-    syncFieldAddressWithMainPin();
+    resetMainPinPosition();
+    setFieldAddress();
   };
 
   var setFlatPriceValue = function () {
@@ -65,7 +72,7 @@
 
   var activateForm = function () {
     formElement.classList.remove('ad-form--disabled');
-    syncFieldAddressWithMainPin();
+    setFieldAddress();
     fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
     fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
     fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
@@ -85,7 +92,7 @@
     evt.preventDefault();
     setDefaultFormValues();
   };
-
+  var mainPinElement = document.querySelector('.map__pin--main');
   var formElement = document.querySelector('.ad-form');
   var resetButtonElement = formElement.querySelector('.ad-form__reset');
   var fieldAddressElement = formElement.querySelector('#address');
@@ -108,8 +115,8 @@
   });
 
   window.form = {
-    activateForm: activateForm,
-    fieldAddressElement: fieldAddressElement,
-    syncFieldAddressWithMainPin: syncFieldAddressWithMainPin
+    activate: activateForm,
+    setFieldAddress: setFieldAddress
   };
+
 })();

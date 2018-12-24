@@ -8,6 +8,8 @@
   var PHOTO_WIDTH = 45;
   var PHOTO_HEIGHT = 40;
 
+  var KEYCODE_ESC = 27;
+
   var FLAT_TYPE_MAP = {
     flat: 'Квартира',
     bungalo: 'Бунгало',
@@ -90,7 +92,7 @@
 
       renderCardElement(element, data);
 
-      window.pins.mapElement.insertBefore(element, window.pins.filtersElement);
+      mapElement.insertBefore(element, filtersElement);
 
       element.addEventListener('click', cardClickHandler);
       document.addEventListener('keydown', documentKeydownHandler);
@@ -102,7 +104,7 @@
   };
 
   var closeCard = function () {
-    window.pins.mapElement.removeChild(cardElement);
+    mapElement.removeChild(cardElement);
 
     cardElement.removeEventListener('keydown', cardClickHandler);
     document.removeEventListener('keydown', documentKeydownHandler);
@@ -117,12 +119,14 @@
   };
 
   var documentKeydownHandler = function (evt) {
-    if (evt.keyCode === window.setup.KEYCODE_ESC) {
+    if (evt.keyCode === KEYCODE_ESC) {
       closeCard();
     }
   };
 
   var cardElement;
+  var mapElement = document.querySelector('.map');
+  var filtersElement = mapElement.querySelector('.map__filters-container');
   var templateCardElement = document.querySelector('#card').content.querySelector('.map__card');
 
   window.popup = {

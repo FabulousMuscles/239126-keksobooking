@@ -22,11 +22,6 @@
 
   var ADVERTISMENT_LIMIT = 8;
 
-  var KEYCODE_ESC = 27;
-
-  var ADDRESS_ORIGIN_X = 570;
-  var ADDRESS_ORIGIN_Y = 375;
-
   var createAdvertisment = function (i) {
     var x = createRandomNumber(LAYOUT_MIN_X_SIZE, LAYOUT_MAX_X_SIZE);
     var y = createRandomNumber(LAYOUT_MIN_Y_SIZE, LAYOUT_MAX_Y_SIZE);
@@ -91,14 +86,8 @@
     return advertisments;
   };
 
-  window.setup = {
-    ADDRESS_ORIGIN_X: ADDRESS_ORIGIN_X,
-    ADDRESS_ORIGIN_Y: ADDRESS_ORIGIN_Y,
-    createAdvertisments: createAdvertisments,
-    KEYCODE_ESC: KEYCODE_ESC,
-    LAYOUT_MAX_X_SIZE: LAYOUT_MAX_X_SIZE,
-    LAYOUT_MIN_X_SIZE: LAYOUT_MIN_X_SIZE,
-    LAYOUT_MAX_Y_SIZE: LAYOUT_MAX_Y_SIZE,
-    LAYOUT_MIN_Y_SIZE: LAYOUT_MIN_Y_SIZE
+  window.data = {
+    createAdvertisments: createAdvertisments
   };
+
 })();
