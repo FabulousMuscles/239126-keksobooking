@@ -18,6 +18,16 @@
     '100': ['0']
   };
 
+  var manageDisabledAttrForFieldsElements = function () {
+    Array.prototype.forEach.call(fieldsElements, function (fieldElement) {
+      if (fieldsDisabled) {
+        fieldElement.disabled = true;
+      } else if (!fieldsDisabled) {
+        fieldElement.disabled = false;
+      }
+    });
+  };
+
   var enableDefaultAdress = function () {
     fieldAddressElement.value = ADDRESS_ORIGIN_X + ', ' + ADDRESS_ORIGIN_Y;
   };
@@ -57,16 +67,33 @@
     setFieldCapacityValue();
   };
 
-  var intializeDefaultInputs = function () {
-    formElement.reset();
+  var initializeInputs = function () {
+    activateFields();
     setFlatPriceValue();
     setFieldCapacityValue();
+  };
+
+  var unitializeInputs = function () {
+    deactivateFields();
     enableDefaultAdress();
+  };
+
+  var activateFields = function () {
+    fieldsDisabled = false;
+    manageDisabledAttrForFieldsElements();
+  };
+
+  var deactivateFields = function () {
+    fieldsDisabled = true;
+    manageDisabledAttrForFieldsElements();
   };
 
   var createFormSubmitHandler = function (onFormSubmit) {
     return function (evt) {
       evt.preventDefault();
+      formElement.reset();
+      unitializeInputs();
+
       onFormSubmit();
     };
   };
@@ -74,7 +101,9 @@
   var createFormResetHandler = function (onFormReset) {
     return function (evt) {
       evt.preventDefault();
-      intializeDefaultInputs();
+      unitializeInputs();
+      formElement.querySelector('#title').value = '';
+      formElement.querySelector('#price').value = '';
 
       onFormReset();
     };
@@ -84,19 +113,19 @@
   var formElement = document.querySelector('.ad-form');
 
   var fieldAddressElement = formElement.querySelector('#address');
-  fieldAddressElement.readOnly = true;
+  var fieldsElements = formElement.querySelectorAll('.ad-form__element');
   var fieldRoomNumberElement = formElement.querySelector('#room_number');
   var fieldCapacityElement = formElement.querySelector('#capacity');
   var fieldTimeInElement = formElement.querySelector('#timein');
   var fieldTimeOutElement = formElement.querySelector('#timeout');
   var fieldFlatTypeElement = formElement.querySelector('#type');
   var fieldFlatPriceElement = formElement.querySelector('#price');
-  var buttonReset = formElement.querySelector('.ad-form__reset');
+  var fieldsDisabled;
 
   var formSubmitHandler;
   var formResetHandler;
 
-  intializeDefaultInputs();
+  unitializeInputs();
 
   window.form = {
     activate: function (onFormSubmit, onFormReset) {
@@ -105,13 +134,13 @@
       formResetHandler = createFormResetHandler(onFormReset);
 
       formElement.classList.remove('ad-form--disabled');
-
+      initializeInputs();
       fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
       fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
       fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
       fieldRoomNumberElement.addEventListener('change', fieldRoomNumberElementChangeHandler);
 
-      buttonReset.addEventListener('click', formResetHandler);
+      formElement.addEventListener('reset', formResetHandler);
       formElement.addEventListener('submit', formSubmitHandler);
     },
     deactivate: function () {

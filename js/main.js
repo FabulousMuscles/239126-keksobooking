@@ -1,22 +1,6 @@
 'use strict';
 (function () {
 
-  var isActivated = false;
-
-  window.map = {
-    isActivated: function () {
-      return isActivated;
-    },
-    activate: function () {
-      isActivated = true;
-      mapElement.classList.remove('map--faded');
-    },
-    deactivate: function () {
-      isActivated = false;
-      mapElement.classList.add('map--faded');
-    }
-  };
-
   var onFormSubmit = function () {
     window.map.deactivate();
     window.form.deactivate();
@@ -25,6 +9,9 @@
 
   var onFormReset = function () {
     window.mainPin.resetPosition();
+    window.map.deactivate();
+    window.form.deactivate();
+    window.pins.remove();
   };
 
   var onPinClick = function (advertisment) {
@@ -43,11 +30,7 @@
     window.form.setFieldAddress(x, y);
   };
 
-
-  var mapElement = document.querySelector('.map');
   var advertisments = window.data.createAdvertisments();
-
-  // window.form.reset();
 
   window.mainPin.activate(
       onMainPinMouseUp,

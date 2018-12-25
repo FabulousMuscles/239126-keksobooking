@@ -12,7 +12,7 @@
     return element;
   };
 
-  var pinsElement = document.querySelector('.map__pins');
+  var pinElement = document.querySelector('.map__pins');
   var templatePinElement = document.querySelector('#pin').content.querySelector('.map__pin');
 
   window.pins = {
@@ -29,12 +29,15 @@
         fragment.appendChild(element);
       });
 
-      pinsElement.appendChild(fragment);
+      pinElement.appendChild(fragment);
     },
     remove: function () {
-
-      // @TODO
-      // pinsElement.innerHTML = '';
+      var pinsElements = pinElement.children;
+      for (var i = pinsElements.length - 1; i >= 0; i--) {
+        if (pinsElements[i].type === 'button') {
+          pinsElements[i].remove();
+        }
+      }
     }
   };
 })();

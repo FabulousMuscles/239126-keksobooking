@@ -1,7 +1,5 @@
 'use strict';
 
-
-// @TODO: fix clode
 (function () {
   var URL_ASSET_PATTERN = 'http://o0.github.io/assets/images/tokyo/{index}.jpg';
   var TEMPLATE_PRICE_SIGN = '{price}₽/ночь';
@@ -135,9 +133,6 @@
   window.card = {
     open: function (data) {
       openCard(data);
-    },
-    close: function () {
-      closeCard();
     }
   };
 })();
