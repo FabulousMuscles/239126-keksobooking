@@ -5,6 +5,7 @@
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
+    window.card.close();
   };
 
   var onFormReset = function () {
@@ -12,6 +13,7 @@
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
+    window.card.close();
   };
 
   var onPinClick = function (advertisment) {

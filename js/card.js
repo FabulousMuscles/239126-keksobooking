@@ -105,12 +105,14 @@
   };
 
   var closeCard = function () {
-    mapElement.removeChild(cardElement);
+    if (cardElement) {
+      mapElement.removeChild(cardElement);
 
-    cardElement.removeEventListener('keydown', cardClickHandler);
-    document.removeEventListener('keydown', documentKeydownHandler);
+      cardElement.removeEventListener('keydown', cardClickHandler);
+      document.removeEventListener('keydown', documentKeydownHandler);
 
-    cardElement = null;
+      cardElement = null;
+    }
   };
 
   var cardClickHandler = function (evt) {
@@ -133,6 +135,9 @@
   window.card = {
     open: function (data) {
       openCard(data);
+    },
+    close: function () {
+      closeCard();
     }
   };
 })();
