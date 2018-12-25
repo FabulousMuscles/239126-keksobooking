@@ -18,21 +18,8 @@
     '100': ['0']
   };
 
-  var resetMainPinPosition = function () {
-    mainPinElement.style.left = ADDRESS_ORIGIN_X + 'px';
-    mainPinElement.style.top = ADDRESS_ORIGIN_Y + 'px';
-  };
-
-  var setFieldAddress = function () {
-    fieldAddressElement.value = mainPinElement.offsetLeft + ', ' + mainPinElement.offsetTop;
-  };
-
-  var setDefaultFormValues = function () {
-    formElement.reset();
-    setFlatPriceValue();
-    setFieldCapacityValue();
-    resetMainPinPosition();
-    setFieldAddress();
+  var setFieldAddress = function (x, y) {
+    fieldAddressElement.value = x + ', ' + y;
   };
 
   var setFlatPriceValue = function () {
@@ -72,7 +59,6 @@
 
   var activateForm = function () {
     formElement.classList.remove('ad-form--disabled');
-    setFieldAddress();
     fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
     fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
     fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
@@ -81,20 +67,13 @@
 
   var deactivateForm = function () {
     formElement.classList.add('ad-form--disabled');
-    setDefaultFormValues();
     fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
     fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
     fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
     fieldRoomNumberElement.removeEventListener('change', fieldRoomNumberElementChangeHandler);
   };
 
-  var resetButtonElementClickHandler = function (evt) {
-    evt.preventDefault();
-    setDefaultFormValues();
-  };
-  var mainPinElement = document.querySelector('.map__pin--main');
   var formElement = document.querySelector('.ad-form');
-  var resetButtonElement = formElement.querySelector('.ad-form__reset');
   var fieldAddressElement = formElement.querySelector('#address');
 
   var fieldRoomNumberElement = formElement.querySelector('#room_number');
@@ -106,9 +85,6 @@
   var fieldFlatTypeElement = formElement.querySelector('#type');
   var fieldFlatPriceElement = formElement.querySelector('#price');
 
-  setDefaultFormValues();
-
-  resetButtonElement.addEventListener('click', resetButtonElementClickHandler);
   formElement.addEventListener('submit', function (evt) {
     evt.preventDefault();
     deactivateForm();
@@ -116,7 +92,16 @@
 
   window.form = {
     activate: activateForm,
-    setFieldAddress: setFieldAddress
+    setFieldAddress: setFieldAddress,
+    returnSetDefault: function (onFormAdressCallback) {
+      return function () {
+        formElement.reset();
+        setFlatPriceValue();
+        setFieldCapacityValue();
+        onFormAdressCallback();
+        setFieldAddress(ADDRESS_ORIGIN_X, ADDRESS_ORIGIN_Y);
+      };
+    }
   };
 
 })();
