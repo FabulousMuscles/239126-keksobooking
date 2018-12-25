@@ -18,8 +18,8 @@
     '100': ['0']
   };
 
-  var setFieldAddress = function (x, y) {
-    fieldAddressElement.value = x + ', ' + y;
+  var enableDefaultAdress = function () {
+    fieldAddressElement.value = ADDRESS_ORIGIN_X + ', ' + ADDRESS_ORIGIN_Y;
   };
 
   var setFlatPriceValue = function () {
@@ -57,50 +57,75 @@
     setFieldCapacityValue();
   };
 
-  var activateForm = function () {
-    formElement.classList.remove('ad-form--disabled');
-    fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
-    fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
-    fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
-    fieldRoomNumberElement.addEventListener('change', fieldRoomNumberElementChangeHandler);
+  var intializeDefaultInputs = function () {
+    formElement.reset();
+    setFlatPriceValue();
+    setFieldCapacityValue();
+    enableDefaultAdress();
   };
 
-  var deactivateForm = function () {
-    formElement.classList.add('ad-form--disabled');
-    fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
-    fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
-    fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
-    fieldRoomNumberElement.removeEventListener('change', fieldRoomNumberElementChangeHandler);
+  var createFormSubmitHandler = function (onFormSubmit) {
+    return function (evt) {
+      evt.preventDefault();
+      onFormSubmit();
+    };
   };
+
+  var createFormResetHandler = function (onFormReset) {
+    return function (evt) {
+      evt.preventDefault();
+      intializeDefaultInputs();
+
+      onFormReset();
+    };
+  };
+
 
   var formElement = document.querySelector('.ad-form');
-  var fieldAddressElement = formElement.querySelector('#address');
 
+  var fieldAddressElement = formElement.querySelector('#address');
+  fieldAddressElement.readOnly = true;
   var fieldRoomNumberElement = formElement.querySelector('#room_number');
   var fieldCapacityElement = formElement.querySelector('#capacity');
-
   var fieldTimeInElement = formElement.querySelector('#timein');
   var fieldTimeOutElement = formElement.querySelector('#timeout');
-
   var fieldFlatTypeElement = formElement.querySelector('#type');
   var fieldFlatPriceElement = formElement.querySelector('#price');
+  var buttonReset = formElement.querySelector('.ad-form__reset');
 
-  formElement.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    deactivateForm();
-  });
+  var formSubmitHandler;
+  var formResetHandler;
+
+  intializeDefaultInputs();
 
   window.form = {
-    activate: activateForm,
-    setFieldAddress: setFieldAddress,
-    returnSetDefault: function (onFormAdressCallback) {
-      return function () {
-        formElement.reset();
-        setFlatPriceValue();
-        setFieldCapacityValue();
-        onFormAdressCallback();
-        setFieldAddress(ADDRESS_ORIGIN_X, ADDRESS_ORIGIN_Y);
-      };
+    activate: function (onFormSubmit, onFormReset) {
+
+      formSubmitHandler = createFormSubmitHandler(onFormSubmit);
+      formResetHandler = createFormResetHandler(onFormReset);
+
+      formElement.classList.remove('ad-form--disabled');
+
+      fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
+      fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
+      fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
+      fieldRoomNumberElement.addEventListener('change', fieldRoomNumberElementChangeHandler);
+
+      buttonReset.addEventListener('click', formResetHandler);
+      formElement.addEventListener('submit', formSubmitHandler);
+    },
+    deactivate: function () {
+      formElement.classList.add('ad-form--disabled');
+      fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
+      fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
+      fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
+      fieldRoomNumberElement.removeEventListener('change', fieldRoomNumberElementChangeHandler);
+
+      formElement.removeEventListener('reset', formResetHandler);
+      formElement.removeEventListener('submit', formSubmitHandler);
+    },
+    setFieldAddress: function (x, y) {
+      fieldAddressElement.value = x + ', ' + y;
     }
   };
 

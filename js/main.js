@@ -1,37 +1,56 @@
 'use strict';
 (function () {
+
+  var isActivated = false;
+
+  window.map = {
+    isActivated: function () {
+      return isActivated;
+    },
+    activate: function () {
+      isActivated = true;
+      mapElement.classList.remove('map--faded');
+    },
+    deactivate: function () {
+      isActivated = false;
+      mapElement.classList.add('map--faded');
+    }
+  };
+
+  var onFormSubmit = function () {
+    window.map.deactivate();
+    window.form.deactivate();
+    window.pins.remove();
+  };
+
+  var onFormReset = function () {
+    window.mainPin.resetPosition();
+  };
+
+  var onPinClick = function (advertisment) {
+    window.card.open(advertisment);
+  };
+
   var onMainPinMouseUp = function () {
-    window.pins.activateMap();
-    createPins();
-    window.form.activate();
+    if (!window.map.isActivated()) {
+      window.map.activate();
+      window.form.activate(onFormSubmit, onFormReset);
+      window.pins.create(advertisments, onPinClick);
+    }
   };
 
   var onMainPinMouseMove = function (x, y) {
     window.form.setFieldAddress(x, y);
   };
 
-  var removePinMouseDown = function () {
-    mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
-  };
 
-  var resetButtonElementClickHandler = function (evt) {
-    evt.preventDefault();
-    setFefaultForm();
-  };
-
-  var mainPinElement = document.querySelector('.map__pin--main');
+  var mapElement = document.querySelector('.map');
   var advertisments = window.data.createAdvertisments();
-  var resetButtonElement = document.querySelector('.ad-form__reset');
 
-  var createPins = window.pins.returnCreatePins(advertisments, window.popup.createPinClickHander);
+  // window.form.reset();
 
-  var pinMouseDownHandler = window.mainPin.activate(onMainPinMouseUp, onMainPinMouseMove, removePinMouseDown);
-
-  var setFefaultForm = window.form.returnSetDefault(window.mainPin.resetMainPinPosition);
-
-  setFefaultForm();
-
-  mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
-  resetButtonElement.addEventListener('click', resetButtonElementClickHandler);
-
+  window.mainPin.activate(
+      onMainPinMouseUp,
+      onMainPinMouseMove
+  );
 })();
