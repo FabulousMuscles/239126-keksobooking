@@ -18,8 +18,6 @@
   window.mainPin = {
     activate: function (onMouseUpCallback, onMouseMoveCallback, removeMouseDownCallback) {
       return function (evt) {
-        var y;
-        var x;
 
         var startCoords = {
           x: evt.clientX,
@@ -37,8 +35,8 @@
             y: moveEvt.clientY
           };
 
-          y = Math.max(LAYOUT_MIN_Y_SIZE, Math.min((mainPinElement.offsetTop - shift.y), LAYOUT_MAX_Y_SIZE));
-          x = Math.max(LAYOUT_MIN_X_SIZE, Math.min((mainPinElement.offsetLeft - shift.x), LAYOUT_MAX_X_SIZE));
+          var y = Math.max(LAYOUT_MIN_Y_SIZE, Math.min((mainPinElement.offsetTop - shift.y), LAYOUT_MAX_Y_SIZE));
+          var x = Math.max(LAYOUT_MIN_X_SIZE, Math.min((mainPinElement.offsetLeft - shift.x), LAYOUT_MAX_X_SIZE));
 
           mainPinElement.style.top = y + 'px';
           mainPinElement.style.left = x + 'px';
