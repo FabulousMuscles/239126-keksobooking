@@ -67,13 +67,13 @@
     setFieldCapacityValue();
   };
 
-  var initializeInputs = function () {
+  var initializeFields = function () {
     activateFields();
     setFlatPriceValue();
     setFieldCapacityValue();
   };
 
-  var unitializeInputs = function () {
+  var unitializeFields = function () {
     deactivateFields();
     enableDefaultAdress();
   };
@@ -92,7 +92,7 @@
     return function (evt) {
       evt.preventDefault();
       formElement.reset();
-      unitializeInputs();
+      unitializeFields();
 
       onFormSubmit();
     };
@@ -101,7 +101,7 @@
   var createFormResetHandler = function (onFormReset) {
     return function (evt) {
       evt.preventDefault();
-      unitializeInputs();
+      unitializeFields();
       formElement.querySelector('#title').value = '';
       formElement.querySelector('#price').value = '';
 
@@ -125,7 +125,7 @@
   var formSubmitHandler;
   var formResetHandler;
 
-  unitializeInputs();
+  unitializeFields();
 
   window.form = {
     activate: function (onFormSubmit, onFormReset) {
@@ -134,7 +134,7 @@
       formResetHandler = createFormResetHandler(onFormReset);
 
       formElement.classList.remove('ad-form--disabled');
-      initializeInputs();
+      initializeFields();
       fieldFlatTypeElement.addEventListener('change', fieldFlatTypeElementChangeHandler);
       fieldTimeInElement.addEventListener('change', fieldTimeInElementChangeHandler);
       fieldTimeOutElement.addEventListener('change', fieldTimeOutElementChangeHandler);
