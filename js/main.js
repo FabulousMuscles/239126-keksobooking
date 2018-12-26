@@ -24,7 +24,7 @@
     if (!window.map.isActivated()) {
       window.map.activate();
       window.form.activate(onFormSubmit, onFormReset);
-      window.pins.create(advertisments, onPinClick);
+      window.backend.load(window.pins.create, onPinClick);
     }
   };
 
