@@ -4,24 +4,24 @@
   var URL_UPLOAD = 'https://js.dump.academy/keksobooking';
 
   window.backend = {
-    load: function (onSuccess, onPinClick) {
+    load: function (onLoad, onPinClick) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
         var advertisments = xhr.response;
-        onSuccess(advertisments, onPinClick);
+        onLoad(advertisments, onPinClick);
       });
 
       xhr.open('GET', URL_LOAD);
       xhr.send();
     },
-    upload: function (data, onSuccess, onError) {
+    upload: function (data, onLoad, onError) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        onSuccess();
+        onLoad();
       });
 
       xhr.addEventListener('error', function () {
