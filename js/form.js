@@ -28,7 +28,7 @@
     });
   };
 
-  var enableDefaultAdress = function () {
+  var setDefaultAddress = function () {
     fieldAddressElement.value = ADDRESS_ORIGIN_X + ', ' + ADDRESS_ORIGIN_Y;
   };
 
@@ -74,8 +74,9 @@
   };
 
   var unitializeFields = function () {
+    formElement.reset();
     deactivateFields();
-    enableDefaultAdress();
+    setDefaultAddress();
   };
 
   var activateFields = function () {
@@ -91,21 +92,17 @@
   var createFormSubmitHandler = function (onFormSubmit) {
     return function (evt) {
       evt.preventDefault();
-      formElement.reset();
-      unitializeFields();
 
-      onFormSubmit();
+      onFormSubmit(new FormData(formElement));
     };
   };
 
   var createFormResetHandler = function (onFormReset) {
-    return function (evt) {
-      evt.preventDefault();
-      unitializeFields();
-      formElement.querySelector('#title').value = '';
-      formElement.querySelector('#price').value = '';
+    return function () {
 
-      onFormReset();
+      setTimeout(function () {
+        onFormReset();
+      });
     };
   };
 
@@ -125,6 +122,7 @@
   var formSubmitHandler;
   var formResetHandler;
 
+  fieldAddressElement.readOnly = true;
   unitializeFields();
 
   window.form = {
@@ -145,6 +143,7 @@
     },
     deactivate: function () {
       formElement.classList.add('ad-form--disabled');
+      unitializeFields();
       fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
       fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
       fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
