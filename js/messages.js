@@ -2,29 +2,23 @@
 (function () {
 
   var KEYCODE_ESC = 27;
+  var MESSAGE_SELECTOR = '.error__message';
 
-  var createUploadMessage = function (templateElement) {
-    createMessage(templateElement);
-
-    return messageElement;
-  };
-
-  var createLoadMessage = function (templateElement, textMessage) {
-    createMessage(templateElement);
-
-    messageElement.querySelector('.error__message').textContent = textMessage;
-
-    return messageElement;
-  };
-
-
-  var createMessage = function (templateElement) {
+  var createMessage = function (templateElement, messageSelector, textMessage) {
     if (messageElement) {
       closeMessage();
     }
     messageElement = templateElement.cloneNode(true);
+    if (textMessage) {
+      var messageTextElement = messageElement.querySelector(messageSelector);
+      if (messageTextElement) {
+        messageTextElement.textContent = textMessage;
+      }
+    }
     messageElement.addEventListener('click', messageClickHandler);
     document.addEventListener('keydown', documentKeydownHandler);
+
+    return messageElement;
   };
 
   var messageClickHandler = function () {
@@ -49,14 +43,11 @@
   var templateSuccessElement = document.querySelector('#success').content.querySelector('.success');
 
   window.messages = {
-    createSuccessUploadMessage: function () {
-      mainElement.appendChild(createUploadMessage(templateSuccessElement));
+    createSuccessMessage: function () {
+      mainElement.appendChild(createMessage(templateSuccessElement));
     },
-    createErrorUploadMessage: function () {
-      mainElement.appendChild(createUploadMessage(templateErrorElement));
-    },
-    createErrorLoadMessage: function (textMessage) {
-      mainElement.appendChild(createLoadMessage(templateErrorElement, textMessage));
+    createErrorMessage: function (textMessage) {
+      mainElement.appendChild(createMessage(templateErrorElement, MESSAGE_SELECTOR, textMessage));
     }
   };
 })();
