@@ -3,16 +3,16 @@
 
   var KEYCODE_ESC = 27;
 
-  var createMessageElement = function (templateElement) {
+  var createMessage = function (templateElement) {
     if (messageElement) {
       closeMessage();
     }
-    var element = templateElement.cloneNode(true);
+    messageElement = templateElement.cloneNode(true);
 
-    element.addEventListener('click', messageClickHandler);
+    messageElement.addEventListener('click', messageClickHandler);
     document.addEventListener('keydown', documentKeydownHandler);
 
-    return element;
+    return messageElement;
   };
 
   var messageClickHandler = function () {
@@ -38,12 +38,10 @@
 
   window.messages = {
     createSuccessMessage: function () {
-      messageElement = createMessageElement(templateSuccessElement);
-      mainElement.appendChild(messageElement);
+      mainElement.appendChild(createMessage(templateSuccessElement));
     },
     createErrorMessage: function () {
-      messageElement = createMessageElement(templateErrorElement);
-      mainElement.appendChild(messageElement);
+      mainElement.appendChild(createMessage(templateErrorElement));
     }
   };
 })();

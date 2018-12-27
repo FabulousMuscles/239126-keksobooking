@@ -18,13 +18,17 @@
       onError();
     });
 
+    xhr.addEventListener('timeout', function () {
+      onError();
+    });
+
     xhr.open(method, url);
     xhr.send(data);
   };
 
   window.backend = {
-    load: function (onLoad, onError, data) {
-      createRequest(onLoad, onError, METHOD_GET, URL_LOAD, data);
+    load: function (onLoad, onError) {
+      createRequest(onLoad, onError, METHOD_GET, URL_LOAD);
     },
     upload: function (onLoad, onError, data) {
       createRequest(onLoad, onError, METHOD_POST, URL_UPLOAD, data);

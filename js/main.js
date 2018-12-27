@@ -4,7 +4,7 @@
   window.messages.createSuccessMessage();
   window.messages.createErrorMessage();
 
-  var deactivateOnSuccess = function () {
+  var deactivateApplication = function () {
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
@@ -14,10 +14,15 @@
 
   var onFormSubmit = function (data) {
     window.backend.upload(
-        deactivateOnSuccess,
-        window.messages.createErrorMessage,
+        function onLoad() {
+          deactivateApplication();
+        },
+        function onError() {
+          window.messages.createErrorMessage();
+        },
         data);
   };
+
 
   var onFormReset = function () {
     window.mainPin.resetPosition();
