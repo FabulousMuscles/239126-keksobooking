@@ -4,28 +4,25 @@
   var KEYCODE_ESC = 27;
 
   var createUploadMessage = function (templateElement) {
+    createMessage(templateElement);
+
+    return messageElement;
+  };
+
+  var createLoadMessage = function (templateElement, textMessage) {
+    createMessage(templateElement);
+
+    messageElement.querySelector('.error__message').textContent = textMessage;
+
+    return messageElement;
+  };
+
+
+  var createMessage = function (templateElement) {
     if (messageElement) {
       closeMessage();
     }
     messageElement = templateElement.cloneNode(true);
-
-    createMessageListeners();
-
-    return messageElement;
-  };
-
-  var createLoadMessage = function (textMessage) {
-    messageElement = templateErrorElement.cloneNode(true);
-
-    messageElement.querySelector('.error__message').textContent = textMessage;
-
-    createMessageListeners();
-
-    return messageElement;
-  };
-
-
-  var createMessageListeners = function () {
     messageElement.addEventListener('click', messageClickHandler);
     document.addEventListener('keydown', documentKeydownHandler);
   };
@@ -59,7 +56,7 @@
       mainElement.appendChild(createUploadMessage(templateErrorElement));
     },
     createErrorLoadMessage: function (textMessage) {
-      mainElement.appendChild(createLoadMessage(textMessage));
+      mainElement.appendChild(createLoadMessage(templateErrorElement, textMessage));
     }
   };
 })();
