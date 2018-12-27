@@ -2,18 +2,16 @@
 (function () {
 
   var KEYCODE_ESC = 27;
-  var MESSAGE_SELECTOR = '.error__message';
+  var SELECTOR_MESSAGE_ERROR = '.error__message';
 
   var createMessage = function (templateElement, messageSelector, textMessage) {
     if (messageElement) {
       closeMessage();
     }
     messageElement = templateElement.cloneNode(true);
-    if (textMessage) {
+    if (messageSelector && textMessage) {
       var messageTextElement = messageElement.querySelector(messageSelector);
-      if (messageTextElement) {
-        messageTextElement.textContent = textMessage;
-      }
+      messageTextElement.textContent = textMessage;
     }
     messageElement.addEventListener('click', messageClickHandler);
     document.addEventListener('keydown', documentKeydownHandler);
@@ -47,7 +45,7 @@
       mainElement.appendChild(createMessage(templateSuccessElement));
     },
     createErrorMessage: function (textMessage) {
-      mainElement.appendChild(createMessage(templateErrorElement, MESSAGE_SELECTOR, textMessage));
+      mainElement.appendChild(createMessage(templateErrorElement, SELECTOR_MESSAGE_ERROR, textMessage));
     }
   };
 })();
