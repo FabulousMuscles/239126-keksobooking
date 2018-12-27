@@ -1,11 +1,19 @@
 'use strict';
 (function () {
 
-  var onFormSubmit = function () {
+  var deactivateOnSuccess = function () {
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
     window.card.close();
+    window.serverMessages.createSuccess();
+  };
+
+  var onFormSubmit = function (data) {
+    window.backend.upload(
+        data,
+        deactivateOnSuccess,
+        window.serverMessages.createError);
   };
 
   var onFormReset = function () {
@@ -31,8 +39,6 @@
   var onMainPinMouseMove = function (x, y) {
     window.form.setFieldAddress(x, y);
   };
-
-  var advertisments = window.data.createAdvertisments();
 
   window.mainPin.activate(
       onMainPinMouseUp,

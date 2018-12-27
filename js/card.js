@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var URL_ASSET_PATTERN = 'http://o0.github.io/assets/images/tokyo/{index}.jpg';
   var TEMPLATE_PRICE_SIGN = '{price}₽/ночь';
   var TEMPLATE_ROOMS_GUESTS = '{rooms} комнаты для {guests} гостей';
   var TEMPLATE_CHECKIN_AND_CHECKOUT = 'Заезд после {checkin}, выезд до {checkout}';
@@ -16,10 +15,6 @@
     bungalo: 'Бунгало',
     house: 'Дом',
     palace: 'Дворец'
-  };
-
-  var createPhotoUrl = function (index) {
-    return URL_ASSET_PATTERN.replace('{index}', index);
   };
 
   var createTimeText = function (checkin, checkout) {
@@ -57,7 +52,7 @@
     photos.forEach(function (photo) {
       var photoElement = document.createElement('img');
 
-      photoElement.src = createPhotoUrl(photo);
+      photoElement.src = photo;
       photoElement.className = 'popup__photo';
       photoElement.width = PHOTO_WIDTH;
       photoElement.height = PHOTO_HEIGHT;
@@ -108,7 +103,7 @@
     if (cardElement) {
       mapElement.removeChild(cardElement);
 
-      cardElement.removeEventListener('keydown', cardClickHandler);
+      cardElement.removeEventListener('click', cardClickHandler);
       document.removeEventListener('keydown', documentKeydownHandler);
 
       cardElement = null;

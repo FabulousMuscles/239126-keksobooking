@@ -74,6 +74,7 @@
   };
 
   var unitializeFields = function () {
+    formElement.reset();
     deactivateFields();
     enableDefaultAdress();
   };
@@ -91,17 +92,14 @@
   var createFormSubmitHandler = function (onFormSubmit) {
     return function (evt) {
       evt.preventDefault();
-      formElement.reset();
-      unitializeFields();
 
-      onFormSubmit();
+      onFormSubmit(new FormData(formElement));
     };
   };
 
   var createFormResetHandler = function (onFormReset) {
     return function (evt) {
       evt.preventDefault();
-      unitializeFields();
       formElement.querySelector('#title').value = '';
       formElement.querySelector('#price').value = '';
 
@@ -145,6 +143,7 @@
     },
     deactivate: function () {
       formElement.classList.add('ad-form--disabled');
+      unitializeFields();
       fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeElementChangeHandler);
       fieldTimeInElement.removeEventListener('change', fieldTimeInElementChangeHandler);
       fieldTimeOutElement.removeEventListener('change', fieldTimeOutElementChangeHandler);
