@@ -98,12 +98,11 @@
   };
 
   var createFormResetHandler = function (onFormReset) {
-    return function (evt) {
-      evt.preventDefault();
-      formElement.querySelector('#title').value = '';
-      formElement.querySelector('#price').value = '';
+    return function () {
 
-      onFormReset();
+      setTimeout(function () {
+        onFormReset();
+      });
     };
   };
 

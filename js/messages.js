@@ -4,6 +4,9 @@
   var KEYCODE_ESC = 27;
 
   var createMessageElement = function (templateElement) {
+    if (messageElement) {
+      closeMessage();
+    }
     var element = templateElement.cloneNode(true);
 
     element.addEventListener('click', messageClickHandler);
@@ -24,6 +27,7 @@
 
   var closeMessage = function () {
     mainElement.removeChild(messageElement);
+    messageElement = null;
     document.removeEventListener('keydown', documentKeydownHandler);
   };
 
@@ -32,12 +36,12 @@
   var templateErrorElement = document.querySelector('#error').content.querySelector('.error');
   var templateSuccessElement = document.querySelector('#success').content.querySelector('.success');
 
-  window.serverMessages = {
-    createSuccess: function () {
+  window.messages = {
+    createSuccessMessage: function () {
       messageElement = createMessageElement(templateSuccessElement);
       mainElement.appendChild(messageElement);
     },
-    createError: function () {
+    createErrorMessage: function () {
       messageElement = createMessageElement(templateErrorElement);
       mainElement.appendChild(messageElement);
     }

@@ -1,19 +1,22 @@
 'use strict';
 (function () {
 
+  window.messages.createSuccessMessage();
+  window.messages.createErrorMessage();
+
   var deactivateOnSuccess = function () {
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
     window.card.close();
-    window.serverMessages.createSuccess();
+    window.messages.createSuccessMessage();
   };
 
   var onFormSubmit = function (data) {
     window.backend.upload(
-        data,
         deactivateOnSuccess,
-        window.serverMessages.createError);
+        window.messages.createErrorMessage,
+        data);
   };
 
   var onFormReset = function () {
@@ -32,7 +35,9 @@
     if (!window.map.isActivated()) {
       window.map.activate();
       window.form.activate(onFormSubmit, onFormReset);
-      window.backend.load(window.pins.create, onPinClick);
+      window.backend.load(function (data) {
+        window.pins.create(data, onPinClick);
+      });
     }
   };
 
