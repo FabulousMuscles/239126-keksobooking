@@ -5,6 +5,8 @@
   var METHOD_POST = 'POST';
   var METHOD_GET = 'GET';
   var XHR_TYPE = 'json';
+  var ERROR_LOAD_TEXT = 'Произошла ошибка соединения.';
+  var ERROR_TIMEOUT_TEXT = 'Время запроса истекло.';
 
   var createRequest = function (onLoad, onError, method, url, data) {
     var xhr = new XMLHttpRequest();
@@ -15,11 +17,11 @@
     });
 
     xhr.addEventListener('error', function () {
-      onError();
+      onError(ERROR_LOAD_TEXT);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError();
+      onError(ERROR_TIMEOUT_TEXT);
     });
 
     xhr.open(method, url);

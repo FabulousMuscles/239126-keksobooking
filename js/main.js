@@ -1,25 +1,30 @@
 'use strict';
 (function () {
 
-  window.messages.createSuccessMessage();
-  window.messages.createErrorMessage();
+  var backendOnUploadSuccess = function () {
+    deactivateApplication();
+  };
+
+  var backendOnUploadError = function () {
+    window.messages.createErrorUploadMessage();
+  };
+
+  var backendOnLoadSuccess = function (data) {
+    window.pins.create(data, onPinClick);
+  };
 
   var deactivateApplication = function () {
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
     window.card.close();
-    window.messages.createSuccessMessage();
+    window.messages.createSuccessUploadMessage();
   };
 
   var onFormSubmit = function (data) {
     window.backend.upload(
-        function onLoad() {
-          deactivateApplication();
-        },
-        function onError() {
-          window.messages.createErrorMessage();
-        },
+        backendOnUploadSuccess,
+        backendOnUploadError,
         data);
   };
 
@@ -40,9 +45,7 @@
     if (!window.map.isActivated()) {
       window.map.activate();
       window.form.activate(onFormSubmit, onFormReset);
-      window.backend.load(function (data) {
-        window.pins.create(data, onPinClick);
-      });
+      window.backend.load(backendOnLoadSuccess, window.messages.createErrorLoadMessage);
     }
   };
 

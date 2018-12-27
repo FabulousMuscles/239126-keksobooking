@@ -28,7 +28,7 @@
     });
   };
 
-  var enableDefaultAdress = function () {
+  var setDefaultAddress = function () {
     fieldAddressElement.value = ADDRESS_ORIGIN_X + ', ' + ADDRESS_ORIGIN_Y;
   };
 
@@ -76,7 +76,7 @@
   var unitializeFields = function () {
     formElement.reset();
     deactivateFields();
-    enableDefaultAdress();
+    setDefaultAddress();
   };
 
   var activateFields = function () {
@@ -122,6 +122,7 @@
   var formSubmitHandler;
   var formResetHandler;
 
+  fieldAddressElement.readOnly = true;
   unitializeFields();
 
   window.form = {

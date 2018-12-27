@@ -3,16 +3,31 @@
 
   var KEYCODE_ESC = 27;
 
-  var createMessage = function (templateElement) {
+  var createUploadMessage = function (templateElement) {
     if (messageElement) {
       closeMessage();
     }
     messageElement = templateElement.cloneNode(true);
 
-    messageElement.addEventListener('click', messageClickHandler);
-    document.addEventListener('keydown', documentKeydownHandler);
+    createMessageListeners();
 
     return messageElement;
+  };
+
+  var createLoadMessage = function (textMessage) {
+    messageElement = templateErrorElement.cloneNode(true);
+
+    messageElement.querySelector('.error__message').textContent = textMessage;
+
+    createMessageListeners();
+
+    return messageElement;
+  };
+
+
+  var createMessageListeners = function () {
+    messageElement.addEventListener('click', messageClickHandler);
+    document.addEventListener('keydown', documentKeydownHandler);
   };
 
   var messageClickHandler = function () {
@@ -37,11 +52,14 @@
   var templateSuccessElement = document.querySelector('#success').content.querySelector('.success');
 
   window.messages = {
-    createSuccessMessage: function () {
-      mainElement.appendChild(createMessage(templateSuccessElement));
+    createSuccessUploadMessage: function () {
+      mainElement.appendChild(createUploadMessage(templateSuccessElement));
     },
-    createErrorMessage: function () {
-      mainElement.appendChild(createMessage(templateErrorElement));
+    createErrorUploadMessage: function () {
+      mainElement.appendChild(createUploadMessage(templateErrorElement));
+    },
+    createErrorLoadMessage: function (textMessage) {
+      mainElement.appendChild(createLoadMessage(textMessage));
     }
   };
 })();
