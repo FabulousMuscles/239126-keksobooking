@@ -1,6 +1,12 @@
 'use strict';
 (function () {
 
+  var onFilterChanged = function (advertisments) {
+    window.card.close();
+    window.pins.remove();
+    window.pins.create(advertisments, onPinClick);
+  };
+
   var onBackendUploadSuccess = function () {
     deactivateApplication();
   };
@@ -13,6 +19,7 @@
     window.map.activate();
     window.form.activate(onFormSubmit, onFormReset);
     window.pins.create(data, onPinClick);
+    window.filters.activate(data, onFilterChanged);
   };
 
   var deactivateApplication = function () {
