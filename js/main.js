@@ -1,10 +1,10 @@
 'use strict';
 (function () {
 
-  var onFilterChanged = function (advertisments) {
+  var onFilterChanged = function (filteredAdvertisments) {
     window.card.close();
     window.pins.remove();
-    window.pins.create(advertisments, onPinClick);
+    window.pins.create(filteredAdvertisments, onPinClick);
   };
 
   var onBackendUploadSuccess = function () {

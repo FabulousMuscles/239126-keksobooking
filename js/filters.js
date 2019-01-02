@@ -8,6 +8,9 @@
   var OFFER_ROOMS = 'rooms';
   var OFFER_GUESTS = 'guests';
 
+  var PRICE_LOW = 10000;
+  var PRICE_HIGH = 50000;
+
   var createSelectFilter = function (element, fieldName) {
     return function (advertisment) {
       if (element.value === ANY_TYPE_VALUE) {
@@ -21,11 +24,11 @@
   var filterByPrice = function (advertisment) {
     switch (priceFilterElement.value) {
       case 'low':
-        return advertisment.offer.price <= 10000;
+        return advertisment.offer.price <= PRICE_LOW;
       case 'high':
-        return advertisment.offer.price >= 50000;
+        return advertisment.offer.price >= PRICE_HIGH;
       case 'middle':
-        return advertisment.offer.price >= 10000 && advertisment.offer.price <= 50000;
+        return advertisment.offer.price >= PRICE_LOW && advertisment.offer.price <= PRICE_HIGH;
       default:
         return true;
     }
@@ -34,7 +37,7 @@
   var filterByFeatures = function (advertisment) {
     var filteredByFeatures;
     var checkedFeatures = [];
-    var featuresString;
+    var featuresString = advertisment.offer.features.toString();
 
     filteredByFeatures = Array.prototype.every.call(featureElements, function (featureElement) {
       return !featureElement.checked;
@@ -43,7 +46,6 @@
     for (var i = 0; i < featureElements.length; i++) {
       if (featureElements[i].checked) {
         checkedFeatures.push(featureElements[i].value);
-        featuresString = advertisment.offer.features.toString();
         filteredByFeatures = featuresString.indexOf(checkedFeatures.toString()) !== -1;
       }
     }
