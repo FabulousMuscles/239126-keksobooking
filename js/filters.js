@@ -42,9 +42,9 @@
       })
       .every(function (featureElement) {
         return advertisment.offer.features.indexOf(featureElement.value) !== -1;
-      })
+      });
 
-      return selectedFeatures;
+    return selectedFeatures;
   };
 
   var filter = function (advertisments) {
