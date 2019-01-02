@@ -35,22 +35,16 @@
   };
 
   var filterByFeatures = function (advertisment) {
-    var filteredByFeatures;
-    var checkedFeatures = [];
-    var featuresString = advertisment.offer.features.toString();
+    var selectedFeatures = Array
+      .from(featureElements)
+      .filter(function (featureElement) {
+        return featureElement.checked;
+      })
+      .every(function (featureElement) {
+        return advertisment.offer.features.indexOf(featureElement.value) !== -1;
+      });
 
-    filteredByFeatures = Array.prototype.every.call(featureElements, function (featureElement) {
-      return !featureElement.checked;
-    });
-
-    for (var i = 0; i < featureElements.length; i++) {
-      if (featureElements[i].checked) {
-        checkedFeatures.push(featureElements[i].value);
-        filteredByFeatures = featuresString.indexOf(checkedFeatures.toString()) !== -1;
-      }
-    }
-
-    return filteredByFeatures;
+    return selectedFeatures;
   };
 
   var filter = function (advertisments) {
