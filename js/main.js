@@ -9,6 +9,7 @@
 
   var onBackendUploadSuccess = function () {
     deactivateApplication();
+    window.messages.createSuccessMessage();
   };
 
   var onBackendUploadError = function () {
@@ -16,6 +17,7 @@
   };
 
   var onBackendLoadSuccess = function (data) {
+    window.photo.activate();
     window.map.activate();
     window.form.activate(onFormSubmit, onFormReset);
     window.pins.create(data, onPinClick);
@@ -23,11 +25,11 @@
   };
 
   var deactivateApplication = function () {
+    window.photo.deactivate();
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
     window.card.close();
-    window.messages.createSuccessMessage();
   };
 
   var onFormSubmit = function (data) {
@@ -39,11 +41,8 @@
 
 
   var onFormReset = function () {
+    deactivateApplication();
     window.mainPin.resetPosition();
-    window.map.deactivate();
-    window.form.deactivate();
-    window.pins.remove();
-    window.card.close();
   };
 
   var onPinClick = function (advertisment) {
