@@ -1,22 +1,26 @@
 'use strict';
-(function () {
 
+(function () {
   var KEYCODE_ESC = 27;
   var SELECTOR_MESSAGE_ERROR = '.error__message';
 
   var createMessage = function (templateElement, messageSelector, textMessage) {
+    var messageTextElement;
+
     if (messageElement) {
       closeMessage();
     }
     messageElement = templateElement.cloneNode(true);
+
     if (messageSelector && textMessage) {
-      var messageTextElement = messageElement.querySelector(messageSelector);
+      messageTextElement = messageElement.querySelector(messageSelector);
       messageTextElement.textContent = textMessage;
     }
+
     messageElement.addEventListener('click', messageClickHandler);
     document.addEventListener('keydown', documentKeydownHandler);
 
-    return messageElement;
+    mainElement.appendChild(messageElement);
   };
 
   var messageClickHandler = function () {
@@ -42,10 +46,10 @@
 
   window.messages = {
     createSuccessMessage: function () {
-      mainElement.appendChild(createMessage(templateSuccessElement));
+      createMessage(templateSuccessElement);
     },
     createErrorMessage: function (textMessage) {
-      mainElement.appendChild(createMessage(templateErrorElement, SELECTOR_MESSAGE_ERROR, textMessage));
+      createMessage(templateErrorElement, SELECTOR_MESSAGE_ERROR, textMessage);
     }
   };
 })();

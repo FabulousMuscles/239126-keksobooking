@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var LAYOUT_MAX_X_SIZE = 1135;
   var LAYOUT_MIN_X_SIZE = 0;
