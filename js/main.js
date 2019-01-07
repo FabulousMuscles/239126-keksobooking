@@ -1,30 +1,31 @@
 'use strict';
 
 (function () {
-  var onFilterChanged = function (filteredAdvertisments) {
+  var callbackFilterChanged = function (filteredAdvertisments) {
     window.card.close();
     window.pins.remove();
-    window.pins.create(filteredAdvertisments, onPinClick);
+    window.pins.create(filteredAdvertisments, callbackPinClick);
   };
 
-  var onUploadSuccess = function () {
+  var callbackUploadSuccess = function () {
     deactivateApplication();
     window.messages.createSuccessMessage();
   };
 
-  var onUploadError = function () {
+  var callbackUploadError = function () {
     window.messages.createErrorMessage();
   };
 
-  var onLoadSuccess = function (data) {
+  var callbackLoadSuccess = function (data) {
     window.formPhoto.activate();
     window.map.activate();
-    window.form.activate(onFormSubmit, onFormReset);
-    window.pins.create(data, onPinClick);
-    window.filters.activate(data, onFilterChanged);
+    window.form.activate(callbackFormSubmit, callbackFormReset);
+    window.pins.create(data, callbackPinClick);
+    window.filters.activate(data, callbackFilterChanged);
   };
 
   var deactivateApplication = function () {
+    window.filters.deactivate();
     window.formPhoto.deactivate();
     window.map.deactivate();
     window.form.deactivate();
@@ -32,31 +33,31 @@
     window.card.close();
   };
 
-  var onFormSubmit = function (data) {
-    window.backend.upload(onUploadSuccess, onUploadError, data);
+  var callbackFormSubmit = function (data) {
+    window.backend.upload(callbackUploadSuccess, callbackUploadError, data);
   };
 
-  var onFormReset = function () {
+  var callbackFormReset = function () {
     deactivateApplication();
     window.mainPin.resetPosition();
   };
 
-  var onPinClick = function (advertisment, onCardClose) {
-    window.card.open(advertisment, onCardClose);
+  var callbackPinClick = function (advertisment, callbackCardClose) {
+    window.card.open(advertisment, callbackCardClose);
   };
 
-  var onMainPinMouseUp = function () {
+  var callbackMainPinMouseUp = function () {
     if (!window.map.isActivated()) {
-      window.backend.load(onLoadSuccess, window.messages.createErrorMessage);
+      window.backend.load(callbackLoadSuccess, window.messages.createErrorMessage);
     }
   };
 
-  var onMainPinMouseMove = function (x, y) {
+  var callbackMainPinMouseMove = function (x, y) {
     window.form.setFieldAddress(x, y);
   };
 
   window.mainPin.activate(
-      onMainPinMouseUp,
-      onMainPinMouseMove
+      callbackMainPinMouseUp,
+      callbackMainPinMouseMove
   );
 })();

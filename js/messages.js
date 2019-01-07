@@ -17,17 +17,17 @@
       messageTextElement.textContent = textMessage;
     }
 
-    messageElement.addEventListener('click', messageClickHandler);
-    document.addEventListener('keydown', documentKeydownHandler);
+    messageElement.addEventListener('click', onMessageClick);
+    document.addEventListener('keydown', onDocumentKeydown);
 
     mainElement.appendChild(messageElement);
   };
 
-  var messageClickHandler = function () {
+  var onMessageClick = function () {
     closeMessage();
   };
 
-  var documentKeydownHandler = function (evt) {
+  var onDocumentKeydown = function (evt) {
     if (evt.keyCode === KEYCODE_ESC) {
       closeMessage();
     }
@@ -36,7 +36,7 @@
   var closeMessage = function () {
     mainElement.removeChild(messageElement);
     messageElement = null;
-    document.removeEventListener('keydown', documentKeydownHandler);
+    document.removeEventListener('keydown', onDocumentKeydown);
   };
 
   var messageElement;

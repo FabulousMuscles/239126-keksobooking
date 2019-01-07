@@ -11,14 +11,14 @@
 
   var mainPinElement = document.querySelector('.map__pin--main');
 
-  var createMouseDownHandler = function (onMainPinMouseUp, onMainPinMouseMove) {
+  var createOnMainPinMouseDown = function (callbackMainPinMouseUp, callbackMainPinMouseMove) {
     return function (evt) {
       var startCoords = {
         x: evt.clientX,
         y: evt.clientY
       };
 
-      var pinMouseMoveHandler = function (moveEvt) {
+      var onMainPinMouseMove = function (moveEvt) {
         var shift = {
           x: startCoords.x - moveEvt.clientX,
           y: startCoords.y - moveEvt.clientY
@@ -35,30 +35,30 @@
         mainPinElement.style.top = y + 'px';
         mainPinElement.style.left = x + 'px';
 
-        onMainPinMouseMove(x, y);
+        callbackMainPinMouseMove(x, y);
       };
 
-      var pinMouseUpHandler = function () {
-        onMainPinMouseUp();
+      var onMainPinMouseUp = function () {
+        callbackMainPinMouseUp();
 
-        document.removeEventListener('mousemove', pinMouseMoveHandler);
-        document.removeEventListener('mouseup', pinMouseUpHandler);
+        document.removeEventListener('mousemove', onMainPinMouseMove);
+        document.removeEventListener('mouseup', onMainPinMouseUp);
       };
-      document.addEventListener('mousemove', pinMouseMoveHandler);
-      document.addEventListener('mouseup', pinMouseUpHandler);
+      document.addEventListener('mousemove', onMainPinMouseMove);
+      document.addEventListener('mouseup', onMainPinMouseUp);
     };
   };
 
-  var pinMouseDownHandler;
+  var onMainPinMouseDown;
 
   window.mainPin = {
-    activate: function (onMainPinMouseUp, onMainPinMouseMove) {
-      pinMouseDownHandler = createMouseDownHandler(onMainPinMouseUp, onMainPinMouseMove);
+    activate: function (callbackMainPinMouseUp, callbackMainPinMouseMove) {
+      onMainPinMouseDown = createOnMainPinMouseDown(callbackMainPinMouseUp, callbackMainPinMouseMove);
 
-      mainPinElement.addEventListener('mousedown', pinMouseDownHandler);
+      mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
     },
     deactivate: function () {
-      mainPinElement.removeEventListener('mousedown', pinMouseDownHandler);
+      mainPinElement.removeEventListener('mousedown', onMainPinMouseDown);
     },
     resetPosition: function () {
       mainPinElement.style.left = ADDRESS_ORIGIN_X + 'px';

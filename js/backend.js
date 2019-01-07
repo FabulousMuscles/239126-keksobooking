@@ -6,35 +6,38 @@
   var METHOD_POST = 'POST';
   var METHOD_GET = 'GET';
   var XHR_TYPE = 'json';
+  var XHR_TIMEOUT = 10000;
   var ERROR_LOAD_TEXT = 'Произошла ошибка соединения.';
   var ERROR_TIMEOUT_TEXT = 'Время запроса истекло.';
 
-  var createRequest = function (onLoad, onError, method, url, data) {
+  var createRequest = function (callbackLoad, callbackError, method, url, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = XHR_TYPE;
 
     xhr.addEventListener('load', function () {
-      onLoad(xhr.response);
+      callbackLoad(xhr.response);
     });
 
     xhr.addEventListener('error', function () {
-      onError(ERROR_LOAD_TEXT);
+      callbackError(ERROR_LOAD_TEXT);
     });
 
     xhr.addEventListener('timeout', function () {
-      onError(ERROR_TIMEOUT_TEXT);
+      callbackError(ERROR_TIMEOUT_TEXT);
     });
+
+    xhr.timeout = XHR_TIMEOUT;
 
     xhr.open(method, url);
     xhr.send(data);
   };
 
   window.backend = {
-    load: function (onLoad, onError) {
-      createRequest(onLoad, onError, METHOD_GET, URL_LOAD);
+    load: function (callbackLoad, callbackError) {
+      createRequest(callbackLoad, callbackError, METHOD_GET, URL_LOAD);
     },
-    upload: function (onLoad, onError, data) {
-      createRequest(onLoad, onError, METHOD_POST, URL_UPLOAD, data);
+    upload: function (callbackLoad, callbackError, data) {
+      createRequest(callbackLoad, callbackError, METHOD_POST, URL_UPLOAD, data);
     }
   };
 })();

@@ -44,19 +44,19 @@
     });
   };
 
-  var fieldFlatTypeChangeHandler = function () {
+  var onFieldFlatTypeChanged = function () {
     syncFlatPriceFieldValue();
   };
 
-  var fieldTimeInChangeHandler = function () {
+  var onFieldTimeInChanged = function () {
     fieldTimeOutElement.value = fieldTimeInElement.value;
   };
 
-  var fieldTimeOutChangeHandler = function () {
+  var onFieldTimeOutChanged = function () {
     fieldTimeInElement.value = fieldTimeOutElement.value;
   };
 
-  var fieldRoomNumberChangeHandler = function () {
+  var onFieldRoomNumberChanged = function () {
     syncCapacityFieldValue();
   };
 
@@ -70,25 +70,25 @@
     syncFormFieldsAttributes();
   };
 
-  var createFormSubmitHandler = function (onFormSubmit) {
+  var createOnFormSubmit = function (callbackFormSubmit) {
     return function (evt) {
       evt.preventDefault();
 
-      onFormSubmit(new FormData(formElement));
+      callbackFormSubmit(new FormData(formElement));
     };
   };
 
-  var createFormResetHandler = function (onFormReset) {
+  var createOnFormReset = function (callbackFormReset) {
     return function () {
       setTimeout(function () {
-        onFormReset();
+        callbackFormReset();
       });
     };
   };
 
   var isFormActive = false;
-  var formSubmitHandler;
-  var formResetHandler;
+  var onFormSubmit;
+  var onFormReset;
   var formElement = document.querySelector('.ad-form');
 
   var fieldAddressElement = formElement.querySelector('#address');
@@ -102,41 +102,40 @@
 
   fieldAddressElement.readOnly = true;
 
-  formElement.reset();
   deactivateFields();
   setDefaultAddress();
 
   window.form = {
-    activate: function (onFormSubmit, onFormReset) {
+    activate: function (callbackFormSubmit, callbackFormReset) {
+      onFormSubmit = createOnFormSubmit(callbackFormSubmit);
+      onFormReset = createOnFormReset(callbackFormReset);
+
+      fieldFlatTypeElement.addEventListener('change', onFieldFlatTypeChanged);
+      fieldTimeInElement.addEventListener('change', onFieldTimeInChanged);
+      fieldTimeOutElement.addEventListener('change', onFieldTimeOutChanged);
+      fieldRoomNumberElement.addEventListener('change', onFieldRoomNumberChanged);
+
+      formElement.classList.remove('ad-form--disabled');
+      formElement.addEventListener('reset', onFormReset);
+      formElement.addEventListener('submit', onFormSubmit);
+
       activateFields();
       syncFlatPriceFieldValue();
       syncCapacityFieldValue();
-
-      formSubmitHandler = createFormSubmitHandler(onFormSubmit);
-      formResetHandler = createFormResetHandler(onFormReset);
-
-      fieldFlatTypeElement.addEventListener('change', fieldFlatTypeChangeHandler);
-      fieldTimeInElement.addEventListener('change', fieldTimeInChangeHandler);
-      fieldTimeOutElement.addEventListener('change', fieldTimeOutChangeHandler);
-      fieldRoomNumberElement.addEventListener('change', fieldRoomNumberChangeHandler);
-
-      formElement.classList.remove('ad-form--disabled');
-      formElement.addEventListener('reset', formResetHandler);
-      formElement.addEventListener('submit', formSubmitHandler);
     },
     deactivate: function () {
-      deactivateFields();
-      setDefaultAddress();
-
-      fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeChangeHandler);
-      fieldTimeInElement.removeEventListener('change', fieldTimeInChangeHandler);
-      fieldTimeOutElement.removeEventListener('change', fieldTimeOutChangeHandler);
-      fieldRoomNumberElement.removeEventListener('change', fieldRoomNumberChangeHandler);
+      fieldFlatTypeElement.removeEventListener('change', onFieldFlatTypeChanged);
+      fieldTimeInElement.removeEventListener('change', onFieldTimeInChanged);
+      fieldTimeOutElement.removeEventListener('change', onFieldTimeOutChanged);
+      fieldRoomNumberElement.removeEventListener('change', onFieldRoomNumberChanged);
 
       formElement.reset();
       formElement.classList.add('ad-form--disabled');
-      formElement.removeEventListener('reset', formResetHandler);
-      formElement.removeEventListener('submit', formSubmitHandler);
+      formElement.removeEventListener('reset', onFormReset);
+      formElement.removeEventListener('submit', onFormSubmit);
+
+      deactivateFields();
+      setDefaultAddress();
     },
     setFieldAddress: function (x, y) {
       fieldAddressElement.value = x + ', ' + y;

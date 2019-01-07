@@ -20,7 +20,7 @@
     }
   };
 
-  var createPins = function (advertisments, onPinClick) {
+  var createPins = function (advertisments, callbackPinClick) {
     var fragment = document.createDocumentFragment();
 
     advertisments.forEach(function (advertisment) {
@@ -30,7 +30,7 @@
         resetActivePin();
         element.classList.add('map__pin--active');
         activeElement = element;
-        onPinClick(advertisment, resetActivePin);
+        callbackPinClick(advertisment, resetActivePin);
       });
 
       fragment.appendChild(element);

@@ -129,7 +129,7 @@
     renderPhotosFragment(photosElement, offer.photos);
   };
 
-  var openCard = function (data, onCardClose) {
+  var openCard = function (data, callbackCardClose) {
     if (!cardElement) {
       var element = templateCardElement.cloneNode(true);
 
@@ -137,11 +137,11 @@
 
       mapElement.insertBefore(element, filtersElement);
 
-      cardClickHandler = createCardClickHandler(onCardClose);
-      documentKeydownHandler = createDocumentKeydownHandler(onCardClose);
+      onCardClick = createOnCardClick(callbackCardClose);
+      onDocumentKeydown = createOnDocumentKeydown(callbackCardClose);
 
-      element.addEventListener('click', cardClickHandler);
-      document.addEventListener('keydown', documentKeydownHandler);
+      element.addEventListener('click', onCardClick);
+      document.addEventListener('keydown', onDocumentKeydown);
 
       cardElement = element;
     } else {
@@ -153,33 +153,33 @@
     if (cardElement) {
       mapElement.removeChild(cardElement);
 
-      cardElement.removeEventListener('click', cardClickHandler);
-      document.removeEventListener('keydown', documentKeydownHandler);
+      cardElement.removeEventListener('click', onCardClick);
+      document.removeEventListener('keydown', onDocumentKeydown);
 
       cardElement = null;
     }
   };
 
-  var createCardClickHandler = function (onCardClose) {
+  var createOnCardClick = function (callbackCardClose) {
     return function (evt) {
       if (evt.target.classList.contains('popup__close')) {
-        onCardClose();
+        callbackCardClose();
         closeCard();
       }
     };
   };
 
-  var createDocumentKeydownHandler = function (onCardClose) {
+  var createOnDocumentKeydown = function (callbackCardClose) {
     return function (evt) {
       if (evt.keyCode === KEYCODE_ESC) {
-        onCardClose();
+        callbackCardClose();
         closeCard();
       }
     };
   };
 
-  var cardClickHandler;
-  var documentKeydownHandler;
+  var onCardClick;
+  var onDocumentKeydown;
 
   var cardElement;
   var mapElement = document.querySelector('.map');

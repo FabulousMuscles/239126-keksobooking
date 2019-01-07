@@ -47,7 +47,7 @@
       .forEach(processFile(onPhotoLoad));
   };
 
-  var processFile = function (onLoad) {
+  var processFile = function (callbackLoad) {
     return function (file) {
       var reader;
       var fileName = file.name.toLowerCase();
@@ -58,33 +58,33 @@
       if (matches) {
         reader = new FileReader();
         reader.addEventListener('load', function () {
-          onLoad(reader.result);
+          callbackLoad(reader.result);
         });
         reader.readAsDataURL(file);
       }
     };
   };
 
-  var avatarFileChangeHandler = function (evt) {
+  var onAvatarFileChanged = function (evt) {
     uploadAvatar(evt.currentTarget);
   };
 
-  var avatarDropZoneDropHandler = function (evt) {
+  var onAvatarDropZoneDrop = function (evt) {
     evt.preventDefault();
 
     uploadAvatar(evt.dataTransfer);
   };
 
-  var photoFileChangeHandler = function (evt) {
+  var onPhotoFileChanged = function (evt) {
 
     uploadPhotos(evt.currentTarget);
   };
 
-  var dragOverHandler = function (evt) {
+  var onDragOver = function (evt) {
     evt.preventDefault();
   };
 
-  var dropZoneDropHandler = function (evt) {
+  var onPhotoDropZoneDrop = function (evt) {
     evt.preventDefault();
 
     uploadPhotos(evt.dataTransfer);
@@ -128,27 +128,27 @@
   var photoDropZoneElement = document.querySelector('.ad-form__drop-zone');
   var photoFileElement = document.querySelector('.ad-form__upload input[type="file"]');
 
-  var avatarDropZoneDragOver = dragOverHandler;
-  var photoDropZoneDargOver = dragOverHandler;
+  var onAvatarDropZoneDragOver = onDragOver;
+  var onPhotoDropZoneDragOver = onDragOver;
 
   window.formPhoto = {
     activate: function () {
-      avatarFileElement.addEventListener('change', avatarFileChangeHandler);
-      avatarDropZoneElement.addEventListener('dragover', avatarDropZoneDragOver);
-      avatarDropZoneElement.addEventListener('drop', avatarDropZoneDropHandler);
+      avatarFileElement.addEventListener('change', onAvatarFileChanged);
+      avatarDropZoneElement.addEventListener('dragover', onAvatarDropZoneDragOver);
+      avatarDropZoneElement.addEventListener('drop', onAvatarDropZoneDrop);
 
-      photoFileElement.addEventListener('change', photoFileChangeHandler);
-      photoDropZoneElement.addEventListener('dragover', photoDropZoneDargOver);
-      photoDropZoneElement.addEventListener('drop', dropZoneDropHandler);
+      photoFileElement.addEventListener('change', onPhotoFileChanged);
+      photoDropZoneElement.addEventListener('dragover', onPhotoDropZoneDragOver);
+      photoDropZoneElement.addEventListener('drop', onPhotoDropZoneDrop);
     },
     deactivate: function () {
-      avatarFileElement.removeEventListener('change', avatarFileChangeHandler);
-      avatarDropZoneElement.removeEventListener('dragover', avatarDropZoneDragOver);
-      avatarDropZoneElement.removeEventListener('drop', avatarDropZoneDropHandler);
+      avatarFileElement.removeEventListener('change', onAvatarFileChanged);
+      avatarDropZoneElement.removeEventListener('dragover', onAvatarDropZoneDragOver);
+      avatarDropZoneElement.removeEventListener('drop', onAvatarDropZoneDrop);
 
-      photoFileElement.removeEventListener('change', photoFileChangeHandler);
-      photoDropZoneElement.removeEventListener('dragover', photoDropZoneDargOver);
-      photoDropZoneElement.removeEventListener('drop', dropZoneDropHandler);
+      photoFileElement.removeEventListener('change', onPhotoFileChanged);
+      photoDropZoneElement.removeEventListener('dragover', onPhotoDropZoneDragOver);
+      photoDropZoneElement.removeEventListener('drop', onPhotoDropZoneDrop);
 
       cleanPhotoContainer();
       cleanAvatar();

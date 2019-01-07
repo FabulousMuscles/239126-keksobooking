@@ -64,7 +64,7 @@
     lastTimeout = setTimeout(callback, DEBOUNCE_INTERVAL);
   };
 
-  var createFilterFormChangeHandler = function (advertisments, onFilterChanged) {
+  var createOnFilterFormChanged = function (advertisments, onFilterChanged) {
     return function () {
       debounce(function () {
         onFilterChanged(filter(advertisments));
@@ -83,16 +83,17 @@
   var filterByRooms = createSelectFilter(roomsFilterElement, OFFER_ROOMS);
   var filterByGuests = createSelectFilter(guestsFilterElement, OFFER_GUESTS);
 
-  var filterFormChangeHandler;
+  var onFilterFormChanged;
   var lastTimeout;
 
   window.filters = {
     activate: function (data, onFilterChanged) {
-      filterFormChangeHandler = createFilterFormChangeHandler(data, onFilterChanged);
-      filterFormElement.addEventListener('change', filterFormChangeHandler);
+      onFilterFormChanged = createOnFilterFormChanged(data, onFilterChanged);
+      filterFormElement.addEventListener('change', onFilterFormChanged);
     },
     deactivate: function () {
-      filterFormElement.removeEventListener('change', filterFormChangeHandler);
+      filterFormElement.reset();
+      filterFormElement.removeEventListener('change', onFilterFormChanged);
     }
   };
 })();
