@@ -1,21 +1,23 @@
 'use strict';
-(function () {
 
+(function () {
   var onFilterChanged = function (filteredAdvertisments) {
     window.card.close();
     window.pins.remove();
     window.pins.create(filteredAdvertisments, onPinClick);
   };
 
-  var onBackendUploadSuccess = function () {
+  var onUploadSuccess = function () {
     deactivateApplication();
+    window.messages.createSuccessMessage();
   };
 
-  var onBackendUploadError = function () {
+  var onUploadError = function () {
     window.messages.createErrorMessage();
   };
 
-  var onBackendLoadSuccess = function (data) {
+  var onLoadSuccess = function (data) {
+    window.formPhoto.activate();
     window.map.activate();
     window.form.activate(onFormSubmit, onFormReset);
     window.pins.create(data, onPinClick);
@@ -23,36 +25,29 @@
   };
 
   var deactivateApplication = function () {
+    window.formPhoto.deactivate();
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
     window.card.close();
-    window.messages.createSuccessMessage();
   };
 
   var onFormSubmit = function (data) {
-    window.backend.upload(
-        onBackendUploadSuccess,
-        onBackendUploadError,
-        data);
+    window.backend.upload(onUploadSuccess, onUploadError, data);
   };
-
 
   var onFormReset = function () {
+    deactivateApplication();
     window.mainPin.resetPosition();
-    window.map.deactivate();
-    window.form.deactivate();
-    window.pins.remove();
-    window.card.close();
   };
 
-  var onPinClick = function (advertisment) {
-    window.card.open(advertisment);
+  var onPinClick = function (advertisment, onCardClose) {
+    window.card.open(advertisment, onCardClose);
   };
 
   var onMainPinMouseUp = function () {
     if (!window.map.isActivated()) {
-      window.backend.load(onBackendLoadSuccess, window.messages.createErrorMessage);
+      window.backend.load(onLoadSuccess, window.messages.createErrorMessage);
     }
   };
 

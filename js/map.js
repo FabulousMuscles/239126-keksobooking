@@ -1,7 +1,7 @@
 'use strict';
+
 (function () {
   var isActivated = false;
-
   var mapElement = document.querySelector('.map');
 
   window.map = {

@@ -1,43 +1,62 @@
 'use strict';
-(function () {
 
+(function () {
   var createPinElement = function (data) {
     var element = templatePinElement.cloneNode(true);
+    var imageElement = element.querySelector('img');
 
     element.style.left = data.location.x + 'px';
     element.style.top = data.location.y + 'px';
-    element.querySelector('img').src = data.author.avatar;
-    element.querySelector('img').alt = data.offer.title;
+
+    imageElement.src = data.author.avatar;
+    imageElement.alt = data.offer.title;
 
     return element;
   };
 
-  var pinElement = document.querySelector('.map__pins');
+  var resetActivePin = function () {
+    if (activeElement) {
+      activeElement.classList.remove('map__pin--active');
+    }
+  };
+
+  var createPins = function (advertisments, onPinClick) {
+    var fragment = document.createDocumentFragment();
+
+    advertisments.forEach(function (advertisment) {
+      var element = createPinElement(advertisment);
+
+      element.addEventListener('click', function () {
+        resetActivePin();
+        element.classList.add('map__pin--active');
+        activeElement = element;
+        onPinClick(advertisment, resetActivePin);
+      });
+
+      fragment.appendChild(element);
+    });
+
+    mapPinsElement.appendChild(fragment);
+  };
+
+  var removePins = function () {
+    activeElement = null;
+
+    Array.from(mapPinsElement.children)
+    .filter(function (childElement) {
+      return childElement.type === 'button';
+    })
+    .forEach(function (childElement) {
+      childElement.remove();
+    });
+  };
+
+  var activeElement;
+  var mapPinsElement = document.querySelector('.map__pins');
   var templatePinElement = document.querySelector('#pin').content.querySelector('.map__pin');
 
   window.pins = {
-    create: function (advertisments, onPinClick) {
-      var fragment = document.createDocumentFragment();
-
-      advertisments.forEach(function (advertisment) {
-        var element = createPinElement(advertisment);
-
-        element.addEventListener('click', function () {
-          onPinClick(advertisment);
-        });
-
-        fragment.appendChild(element);
-      });
-
-      pinElement.appendChild(fragment);
-    },
-    remove: function () {
-      var pinsElements = pinElement.children;
-      for (var i = pinsElements.length - 1; i >= 0; i--) {
-        if (pinsElements[i].type === 'button') {
-          pinsElements[i].remove();
-        }
-      }
-    }
+    create: createPins,
+    remove: removePins
   };
 })();

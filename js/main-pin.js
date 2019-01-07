@@ -1,9 +1,10 @@
 'use strict';
+
 (function () {
-  var LAYOUT_MAX_X_SIZE = 1135;
-  var LAYOUT_MIN_X_SIZE = 0;
-  var LAYOUT_MAX_Y_SIZE = 630;
-  var LAYOUT_MIN_Y_SIZE = 130;
+  var POSITION_MAX_X = 1135;
+  var POSITION_MIN_X = 0;
+  var POSITION_MAX_Y = 630;
+  var POSITION_MIN_Y = 130;
 
   var ADDRESS_ORIGIN_X = 570;
   var ADDRESS_ORIGIN_Y = 375;
@@ -28,8 +29,8 @@
           y: moveEvt.clientY
         };
 
-        var y = Math.max(LAYOUT_MIN_Y_SIZE, Math.min((mainPinElement.offsetTop - shift.y), LAYOUT_MAX_Y_SIZE));
-        var x = Math.max(LAYOUT_MIN_X_SIZE, Math.min((mainPinElement.offsetLeft - shift.x), LAYOUT_MAX_X_SIZE));
+        var y = Math.max(POSITION_MIN_Y, Math.min((mainPinElement.offsetTop - shift.y), POSITION_MAX_Y));
+        var x = Math.max(POSITION_MIN_X, Math.min((mainPinElement.offsetLeft - shift.x), POSITION_MAX_X));
 
         mainPinElement.style.top = y + 'px';
         mainPinElement.style.left = x + 'px';
