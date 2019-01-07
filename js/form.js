@@ -70,7 +70,7 @@
     syncFormFieldsAttributes();
   };
 
-  var createOnFormSubmit = function (callbackFormSubmit) {
+  var createFormSubmitHandler = function (callbackFormSubmit) {
     return function (evt) {
       evt.preventDefault();
 
@@ -78,7 +78,7 @@
     };
   };
 
-  var createOnFormReset = function (callbackFormReset) {
+  var createFormResetHandler = function (callbackFormReset) {
     return function () {
       setTimeout(function () {
         callbackFormReset();
@@ -107,8 +107,8 @@
 
   window.form = {
     activate: function (callbackFormSubmit, callbackFormReset) {
-      onFormSubmit = createOnFormSubmit(callbackFormSubmit);
-      onFormReset = createOnFormReset(callbackFormReset);
+      onFormSubmit = createFormSubmitHandler(callbackFormSubmit);
+      onFormReset = createFormResetHandler(callbackFormReset);
 
       fieldFlatTypeElement.addEventListener('change', onFieldFlatTypeChanged);
       fieldTimeInElement.addEventListener('change', onFieldTimeInChanged);

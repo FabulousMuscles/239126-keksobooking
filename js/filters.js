@@ -64,7 +64,7 @@
     lastTimeout = setTimeout(callback, DEBOUNCE_INTERVAL);
   };
 
-  var createOnFilterFormChanged = function (advertisments, onFilterChanged) {
+  var createFilterFormChangeHandler = function (advertisments, onFilterChanged) {
     return function () {
       debounce(function () {
         onFilterChanged(filter(advertisments));
@@ -88,7 +88,7 @@
 
   window.filters = {
     activate: function (data, onFilterChanged) {
-      onFilterFormChanged = createOnFilterFormChanged(data, onFilterChanged);
+      onFilterFormChanged = createFilterFormChangeHandler(data, onFilterChanged);
       filterFormElement.addEventListener('change', onFilterFormChanged);
     },
     deactivate: function () {

@@ -11,7 +11,7 @@
 
   var mainPinElement = document.querySelector('.map__pin--main');
 
-  var createOnMainPinMouseDown = function (callbackMainPinMouseUp, callbackMainPinMouseMove) {
+  var createMainPinMouseDownHandler = function (callbackMainPinMouseUp, callbackMainPinMouseMove) {
     return function (evt) {
       var startCoords = {
         x: evt.clientX,
@@ -53,7 +53,7 @@
 
   window.mainPin = {
     activate: function (callbackMainPinMouseUp, callbackMainPinMouseMove) {
-      onMainPinMouseDown = createOnMainPinMouseDown(callbackMainPinMouseUp, callbackMainPinMouseMove);
+      onMainPinMouseDown = createMainPinMouseDownHandler(callbackMainPinMouseUp, callbackMainPinMouseMove);
 
       mainPinElement.addEventListener('mousedown', onMainPinMouseDown);
     },

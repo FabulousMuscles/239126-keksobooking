@@ -137,8 +137,8 @@
 
       mapElement.insertBefore(element, filtersElement);
 
-      onCardClick = createOnCardClick(callbackCardClose);
-      onDocumentKeydown = createOnDocumentKeydown(callbackCardClose);
+      onCardClick = createCardClickHandler(callbackCardClose);
+      onDocumentKeydown = createDocumentKeydownHandler(callbackCardClose);
 
       element.addEventListener('click', onCardClick);
       document.addEventListener('keydown', onDocumentKeydown);
@@ -160,7 +160,7 @@
     }
   };
 
-  var createOnCardClick = function (callbackCardClose) {
+  var createCardClickHandler = function (callbackCardClose) {
     return function (evt) {
       if (evt.target.classList.contains('popup__close')) {
         callbackCardClose();
@@ -169,7 +169,7 @@
     };
   };
 
-  var createOnDocumentKeydown = function (callbackCardClose) {
+  var createDocumentKeydownHandler = function (callbackCardClose) {
     return function (evt) {
       if (evt.keyCode === KEYCODE_ESC) {
         callbackCardClose();
