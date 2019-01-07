@@ -3,7 +3,7 @@
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var PHOTOS_LIMIT = 10;
-  var PHOTO_WIDTH = '70';
+  var PHOTO_WIDTH = '70'; // @NOTICE why string?
   var PHOTO_HEIGHT = '70';
   var AVATAR_SRC_DEFAULT = 'img/muffin-grey.svg';
 
@@ -26,7 +26,7 @@
   };
 
   var uploadAvatar = function (fileElement) {
-    var file = fileElement.files[0];
+    var file = fileElement.files[0]; // @TODO: refactor
     processFile(onAvatarLoad)(file);
   };
 

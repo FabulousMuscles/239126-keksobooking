@@ -28,15 +28,16 @@
     fieldAddressElement.value = ADDRESS_ORIGIN_X + ', ' + ADDRESS_ORIGIN_Y;
   };
 
-  var setFlatPriceValue = function () {
+  var syncFlatPriceFieldValue = function () {
     fieldFlatPriceElement.min = FlatPriceMap[fieldFlatTypeElement.value.toUpperCase()];
     fieldFlatPriceElement.placeholder = fieldFlatPriceElement.min;
   };
 
-  var setFieldCapacityValue = function () {
+  var syncCapacityFieldValue = function () {
     var capacityValues = ValidationRoomCapacityMap[fieldRoomNumberElement.value];
+    var defaultCapacityValue = capacityValues[0];
 
-    fieldCapacityElement.value = capacityValues[0];
+    fieldCapacityElement.value = defaultCapacityValue;
 
     Array.prototype.forEach.call(fieldCapacityElement.options, function (optionElement) {
       optionElement.disabled = capacityValues.indexOf(optionElement.value) === -1;
@@ -44,7 +45,7 @@
   };
 
   var fieldFlatTypeChangeHandler = function () {
-    setFlatPriceValue();
+    syncFlatPriceFieldValue();
   };
 
   var fieldTimeInChangeHandler = function () {
@@ -56,19 +57,7 @@
   };
 
   var fieldRoomNumberChangeHandler = function () {
-    setFieldCapacityValue();
-  };
-
-  var activateForm = function () {
-    activateFields();
-    setFlatPriceValue();
-    setFieldCapacityValue();
-  };
-
-  var deactivateForm = function () {
-    formElement.reset();
-    deactivateFields();
-    setDefaultAddress();
+    syncCapacityFieldValue();
   };
 
   var activateFields = function () {
@@ -97,6 +86,9 @@
     };
   };
 
+  var isFormActive = false;
+  var formSubmitHandler;
+  var formResetHandler;
   var formElement = document.querySelector('.ad-form');
 
   var fieldAddressElement = formElement.querySelector('#address');
@@ -108,37 +100,41 @@
   var fieldFlatTypeElement = formElement.querySelector('#type');
   var fieldFlatPriceElement = formElement.querySelector('#price');
 
-  var isFormActive = false;
-
-  var formSubmitHandler;
-  var formResetHandler;
-
   fieldAddressElement.readOnly = true;
-  deactivateForm();
+
+  formElement.reset();
+  deactivateFields();
+  setDefaultAddress();
 
   window.form = {
     activate: function (onFormSubmit, onFormReset) {
+      activateFields();
+      syncFlatPriceFieldValue();
+      syncCapacityFieldValue();
+
       formSubmitHandler = createFormSubmitHandler(onFormSubmit);
       formResetHandler = createFormResetHandler(onFormReset);
 
-      formElement.classList.remove('ad-form--disabled');
-      activateForm();
       fieldFlatTypeElement.addEventListener('change', fieldFlatTypeChangeHandler);
       fieldTimeInElement.addEventListener('change', fieldTimeInChangeHandler);
       fieldTimeOutElement.addEventListener('change', fieldTimeOutChangeHandler);
       fieldRoomNumberElement.addEventListener('change', fieldRoomNumberChangeHandler);
 
+      formElement.classList.remove('ad-form--disabled');
       formElement.addEventListener('reset', formResetHandler);
       formElement.addEventListener('submit', formSubmitHandler);
     },
     deactivate: function () {
-      formElement.classList.add('ad-form--disabled');
-      deactivateForm();
+      deactivateFields();
+      setDefaultAddress();
+
       fieldFlatTypeElement.removeEventListener('change', fieldFlatTypeChangeHandler);
       fieldTimeInElement.removeEventListener('change', fieldTimeInChangeHandler);
       fieldTimeOutElement.removeEventListener('change', fieldTimeOutChangeHandler);
       fieldRoomNumberElement.removeEventListener('change', fieldRoomNumberChangeHandler);
 
+      formElement.reset();
+      formElement.classList.add('ad-form--disabled');
       formElement.removeEventListener('reset', formResetHandler);
       formElement.removeEventListener('submit', formSubmitHandler);
     },

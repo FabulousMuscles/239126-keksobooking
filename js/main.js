@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var onFilterChanged = function (filteredAdvertisments, pinElement) {
-    window.card.close(pinElement);
+  var onFilterChanged = function (filteredAdvertisments) {
+    window.card.close();
     window.pins.remove();
     window.pins.create(filteredAdvertisments, onPinClick);
   };
@@ -24,12 +24,12 @@
     window.filters.activate(data, onFilterChanged);
   };
 
-  var deactivateApplication = function (pinElement) {
+  var deactivateApplication = function () {
     window.formPhoto.deactivate();
     window.map.deactivate();
     window.form.deactivate();
     window.pins.remove();
-    window.card.close(pinElement);
+    window.card.close();
   };
 
   var onFormSubmit = function (data) {
@@ -41,8 +41,8 @@
     window.mainPin.resetPosition();
   };
 
-  var onPinClick = function (advertisment, pinElement) {
-    window.card.open(advertisment, pinElement);
+  var onPinClick = function (advertisment, onCardClose) {
+    window.card.open(advertisment, onCardClose);
   };
 
   var onMainPinMouseUp = function () {

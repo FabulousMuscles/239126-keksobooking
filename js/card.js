@@ -9,7 +9,7 @@
   var PHOTO_HEIGHT = 40;
   var KEYCODE_ESC = 27;
 
-  var FlatTypeMap = { // @TODO: Критерий Б8
+  var FlatTypeMap = {
     FLAT: 'Квартира',
     BUNGALO: 'Бунгало',
     HOUSE: 'Дом',
@@ -129,28 +129,27 @@
     renderPhotosFragment(photosElement, offer.photos);
   };
 
-  var openCard = function (data, pinElement) {
+  var openCard = function (data, onCardClose) {
     if (!cardElement) {
       var element = templateCardElement.cloneNode(true);
-
-      cardClickHandler = createCardClickHandler(pinElement);
-      documentKeydownHandler = createDocumentKeydownHandler(pinElement);
 
       renderCardElement(element, data);
 
       mapElement.insertBefore(element, filtersElement);
 
+      cardClickHandler = createCardClickHandler(onCardClose);
+      documentKeydownHandler = createDocumentKeydownHandler(onCardClose);
+
       element.addEventListener('click', cardClickHandler);
       document.addEventListener('keydown', documentKeydownHandler);
 
       cardElement = element;
-      pinElement.classList.add('map__pin--active');
     } else {
       renderCardElement(cardElement, data);
     }
   };
 
-  var closeCard = function (pinElement) {
+  var closeCard = function () {
     if (cardElement) {
       mapElement.removeChild(cardElement);
 
@@ -158,28 +157,30 @@
       document.removeEventListener('keydown', documentKeydownHandler);
 
       cardElement = null;
-      pinElement.classList.remove('map__pin--active');
     }
   };
 
-  var createCardClickHandler = function (pinElement) {
+  var createCardClickHandler = function (onCardClose) {
     return function (evt) {
       if (evt.target.classList.contains('popup__close')) {
-        closeCard(pinElement);
+        onCardClose();
+        closeCard();
       }
     };
   };
 
-  var createDocumentKeydownHandler = function (pinElement) {
+  var createDocumentKeydownHandler = function (onCardClose) {
     return function (evt) {
       if (evt.keyCode === KEYCODE_ESC) {
-        closeCard(pinElement);
+        onCardClose();
+        closeCard();
       }
     };
   };
 
   var cardClickHandler;
   var documentKeydownHandler;
+
   var cardElement;
   var mapElement = document.querySelector('.map');
   var filtersElement = mapElement.querySelector('.map__filters-container');
