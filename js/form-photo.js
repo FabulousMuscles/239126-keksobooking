@@ -2,10 +2,12 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var PHOTOS_LIMIT = 10;
-  var PHOTO_WIDTH = '70'; // @NOTICE why string?
-  var PHOTO_HEIGHT = '70';
+  var PHOTO_LIMIT = 10;
+  var PHOTO_WIDTH = 70;
+  var PHOTO_HEIGHT = 70;
+
   var AVATAR_SRC_DEFAULT = 'img/muffin-grey.svg';
+  var AVATAR_LIMIT = 1;
 
   var onPhotoLoad = function (fileSource) {
     var divElement = document.createElement('div');
@@ -26,12 +28,13 @@
   };
 
   var uploadAvatar = function (fileElement) {
-    var file = fileElement.files[0]; // @TODO: refactor
-    processFile(onAvatarLoad)(file);
+    Array
+      .from(fileElement.files)
+      .slice(0, AVATAR_LIMIT)
+      .forEach(processFile(onAvatarLoad));
   };
 
   var uploadPhotos = function (fileElement) {
-    var files = fileElement.files;
     var photosElements = photoContainerElement.querySelectorAll('.ad-form__photo');
 
     if (hasPhotoPlaceholder) {
@@ -39,8 +42,8 @@
     }
 
     Array
-      .from(files)
-      .slice(0, PHOTOS_LIMIT - photosElements.length)
+      .from(fileElement.files)
+      .slice(0, PHOTO_LIMIT - photosElements.length)
       .forEach(processFile(onPhotoLoad));
   };
 
@@ -68,10 +71,12 @@
 
   var avatarDropZoneDropHandler = function (evt) {
     evt.preventDefault();
+
     uploadAvatar(evt.dataTransfer);
   };
 
   var photoFileChangeHandler = function (evt) {
+
     uploadPhotos(evt.currentTarget);
   };
 
@@ -81,6 +86,7 @@
 
   var dropZoneDropHandler = function (evt) {
     evt.preventDefault();
+
     uploadPhotos(evt.dataTransfer);
   };
 
