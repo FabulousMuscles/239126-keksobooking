@@ -82,6 +82,8 @@
     return function () {
       setTimeout(function () {
         callbackFormReset();
+        syncCapacityFieldValue();
+        syncFlatPriceFieldValue();
       });
     };
   };
@@ -104,6 +106,8 @@
 
   deactivateFields();
   setDefaultAddress();
+  syncCapacityFieldValue();
+  syncFlatPriceFieldValue();
 
   window.form = {
     activate: function (callbackFormSubmit, callbackFormReset) {
