@@ -2,11 +2,11 @@
 
 (function () {
   var createPinElement = function (data) {
-    var element = templatePinElement.cloneNode(true);
+    var pinElement = templatePinElement.cloneNode(true);
     var imageElement = element.querySelector('img');
 
-    element.style.left = data.location.x + 'px';
-    element.style.top = data.location.y + 'px';
+    pinElement.style.left = data.location.x + 'px';
+    pinElement.style.top = data.location.y + 'px';
 
     imageElement.src = data.author.avatar;
     imageElement.alt = data.offer.title;
