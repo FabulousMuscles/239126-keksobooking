@@ -124,8 +124,6 @@
       formElement.addEventListener('submit', onFormSubmit);
 
       activateFields();
-      syncFlatPriceFieldValue();
-      syncCapacityFieldValue();
     },
     deactivate: function () {
       fieldFlatTypeElement.removeEventListener('change', onFieldFlatTypeChanged);
