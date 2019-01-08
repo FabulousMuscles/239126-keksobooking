@@ -3,7 +3,7 @@
 (function () {
   var createPinElement = function (data) {
     var pinElement = templatePinElement.cloneNode(true);
-    var imageElement = element.querySelector('img');
+    var imageElement = pinElement.querySelector('img');
 
     pinElement.style.left = data.location.x + 'px';
     pinElement.style.top = data.location.y + 'px';
@@ -11,7 +11,7 @@
     imageElement.src = data.author.avatar;
     imageElement.alt = data.offer.title;
 
-    return element;
+    return pinElement;
   };
 
   var resetActivePin = function () {
